@@ -1,0 +1,17 @@
+server:
+  port: 10020
+spring:
+  application:
+    name: service-system
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+      discovery:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+  config:
+    import:
+      - nacos:${spring.application.name}.yml

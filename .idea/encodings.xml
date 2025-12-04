@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/class-api/class-api-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/class-api-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/class-api-uaa/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/class-api-uaa/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/class-basic-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/class-basic-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/class-basic-dependency/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/class-basic-dependency/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/cloud-gen-code/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/cloud-gen-code/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-uaa/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-uaa/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-user/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-uaa/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-uaa/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-user/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-support/class-service-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-support/class-service-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-support/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-support/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/cloud-basic-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/cloud-basic-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/cloud-gen-code/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/cloud-gen-code/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud-basic/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
