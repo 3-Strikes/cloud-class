@@ -1,10 +1,13 @@
 package com.example.result;
 
+import com.example.enums.E;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 //返回JSON结果 Ret
 @Data
-public class JSONResult {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class JSONResult<T> {
 
     private boolean success = true;
 
@@ -14,7 +17,7 @@ public class JSONResult {
     private String code = "20000";
 
     //返回的数据
-    private Object data;
+    private T data;
 
     /**
      * 创建当前实例
@@ -51,6 +54,16 @@ public class JSONResult {
         return instance;
     }
 
+    public static JSONResult error(String message,String code,Object data) {
+        JSONResult instance = new JSONResult();
+        instance.setMessage(message);
+        instance.setSuccess(false);
+        instance.setCode(code);
+        instance.setData(data);
+        return instance;
+    }
+
+
     public static JSONResult error() {
         JSONResult jsonResult = new JSONResult();
         jsonResult.setSuccess(false);
@@ -68,5 +81,8 @@ public class JSONResult {
 //        return error(errorCode.getMesssage(),errorCode.getCode());
 //    }
 
+    public static JSONResult error(E e) {return error(e.getMsg(),e.getCode());}
+
+    public static JSONResult error(E e,Object data) {return error(e.getMsg(),e.getCode(),data);}
 
 }

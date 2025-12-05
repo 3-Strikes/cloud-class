@@ -13,10 +13,10 @@ public class Swagger2Config {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("系统服务")
-                        .description("系统服务接口文档")
+                        .title("认证服务")
+                        .description("认证服务接口文档")
                         .version("v1.0.0")
-                        .contact(new Contact().name("lzy").email("1098081410@qq.com"))
+                        .contact(new Contact().name("fyt").email("fythnu@163.com"))
                 );
     }
 
