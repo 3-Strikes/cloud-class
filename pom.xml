@@ -59,6 +59,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
     </dependencies>
 
     <!--    不会自动继承，进行版本管理。子工程需要按需引入依赖，但不用指定版本-->

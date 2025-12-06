@@ -7,4 +7,5 @@ public interface CacheKeys {
 
     String VALI_CODE=APP_ID+SERVICE_ID+"valicode:";
 
+    String IMAGE_CODE=APP_ID+SERVICE_ID+"imagecode:";
 }
