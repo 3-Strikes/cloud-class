@@ -5,17 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>cloud-class</artifactId>
+        <artifactId>class-basic</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>class-basic</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>class-basic-common</module>
-        <module>class-basic-dependency</module>
-        <module>class-basic-cache</module>
-    </modules>
+    <artifactId>class-basic-cache</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

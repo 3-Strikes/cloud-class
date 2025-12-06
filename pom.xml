@@ -64,6 +64,12 @@
     <!--    不会自动继承，进行版本管理。子工程需要按需引入依赖，但不用指定版本-->
     <dependencyManagement>
         <dependencies>
+            <!-- 父pom的dependencyManagement中添加 -->
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-spring-boot-starter</artifactId>
+                <version>1.7.1</version> <!-- 根据项目兼容版本调整 -->
+            </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

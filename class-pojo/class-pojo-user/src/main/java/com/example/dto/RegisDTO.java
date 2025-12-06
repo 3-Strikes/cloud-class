@@ -1,40 +1,25 @@
 package com.example.dto;
 
+import com.example.validation.Password;
+import com.example.validation.Phone;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
 public class RegisDTO {
-    private String  mobile;
-    private String  password;
-    private Integer  regChannel;
-    private String  smsCode;
+    @NotBlank(message = "手机号不能为空")
+    @Phone(message = "手机号格式不正确")
+    private String mobile;
 
-    public String getMobile() {
-        return mobile;
-    }
+    @NotBlank(message = "密码不能为空")
+    @Password(min = 6, max = 20, message = "密码长度必须在6-20位之间，且包含数字和字母")
+    private String password;
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
+    @NotBlank(message = "图片验证码不能为空")
+    private String imageCode;
 
-    public String getPassword() {
-        return password;
-    }
+    @NotBlank(message = "短信验证码不能为空")
+    private String smsCode;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Integer getRegChannel() {
-        return regChannel;
-    }
-
-    public void setRegChannel(Integer regChannel) {
-        this.regChannel = regChannel;
-    }
-
-    public String getSmsCode() {
-        return smsCode;
-    }
-
-    public void setSmsCode(String smsCode) {
-        this.smsCode = smsCode;
-    }
+    private Integer regChannel;
 }
