@@ -3,7 +3,6 @@ Vue.prototype.$http = axios //给Vue这个类添加一个原型的属性,这个�
 Vue.config.productionTip = false
 
 
-
 var api = {
     getQueryVariable(variable){
         var query = window.location.search.substring(1);

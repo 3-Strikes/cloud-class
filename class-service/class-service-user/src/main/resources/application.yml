@@ -1,0 +1,74 @@
+server:
+  port: 10040
+spring:
+  application:
+    name: service-user
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+      discovery:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level:  full
+            connect-timeout: 3000 # 连接超时 3 秒
+            read-timeout: 5000 # 读取超时 5 秒
+  config:
+    import:
+      - nacos:${spring.application.name}.yml
+      - nacos:share-config.yml?group=DEFAULT_GROUP
+#  data:
+#    redis:
+#      host: 127.0.0.1
+#      port: 6379
+#      password: root
+#      jedis:
+#        pool:
+#          min-idle: 2
+#          max-idle: 10
+#logging:
+#  level:
+#    com.example.api: debug
+
+#seata:
+#  tx-service-group: default_tx_group
+#  registry:
+#    type: nacos
+#    nacos:
+#      server-addr: 127.0.0.1:8848
+#      username: nacos
+#      password: nacos
+#      namespace: 4cb98312-97e4-425c-aa43-f96936ae5813
+#      group: SEATA_GROUP
+#      application: seata-server   # seata服务在注册中心的实例名
+#  config:
+#    type: nacos
+#    nacos:
+#      server-addr: 127.0.0.1:8848
+#      username: nacos
+#      password: nacos
+#      namespace: 4cb98312-97e4-425c-aa43-f96936ae5813
+#      group: SEATA_GROUP
+#      data-id: seataServer.properties
+#  data-source-proxy-mode: AT
+
+#spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/ymcc-user?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+#    username: root
+#    password: 123456
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      initial-size: 2
+#
+#mybatis-plus:
+#  mapper-locations: classpath:com/example/mapper/*Mapper.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -16,6 +16,7 @@
     <file url="file://$PROJECT_DIR$/class-basic/cloud-gen-code/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-course/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-system/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-system/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-pojo/class-pojo-uaa/src/main/java" charset="UTF-8" />
@@ -25,6 +26,7 @@
     <file url="file://$PROJECT_DIR$/class-pojo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-pojo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-service/class-service-commons/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-service/class-service-course/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-service/class-service-system/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-service/class-service-system/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-service/class-service-uaa/src/main/java" charset="UTF-8" />

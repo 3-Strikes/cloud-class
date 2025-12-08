@@ -16,6 +16,7 @@
         <module>class-service-uaa</module>
         <module>class-service-user</module>
         <module>class-service-commons</module>
+        <module>class-service-course</module>
     </modules>
 
     <properties>

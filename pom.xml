@@ -24,6 +24,8 @@
         <module>class-pojo/class-pojo-system</module>
         <module>class-pojo/class-pojo-uaa</module>
         <module>class-pojo/class-pojo-user</module>
+        <module>class-pojo/class-pojo-course</module>
+        <module>class-pojo/class-pojo-course</module>
     </modules>
 
     <properties>

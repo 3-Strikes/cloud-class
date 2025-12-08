@@ -1,0 +1,41 @@
+package com.example.cache;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class CacheService {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    public void set(String key,Object value){
+        redisTemplate.opsForValue().set(key,value);
+    }
+
+    public void setex(String key,Object value,Long hours){
+        redisTemplate.opsForValue().set(key,value,hours, TimeUnit.HOURS);
+    }
+    public void setex(String key,Object value,Long time,TimeUnit tu){
+        redisTemplate.opsForValue().set(key,value,time, tu);
+    }
+    public Boolean setnx(String key,Object value,Integer seconds){
+        Boolean isok=redisTemplate.opsForValue().setIfAbsent(key,value,seconds, TimeUnit.SECONDS);
+        return isok;
+    }
+
+    public Object get(String key){
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public void del(String key){
+        redisTemplate.delete(key);
+    }
+
+    public Long ttl(String key){
+        return redisTemplate.getExpire(key);
+    }
+}
