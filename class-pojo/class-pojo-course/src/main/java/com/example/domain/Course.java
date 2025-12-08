@@ -4,16 +4,20 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
- * @author lzy
+ * @author fyt
  * @since 2025-12-08
  */
 @TableName("t_course")
@@ -27,6 +31,7 @@ public class Course implements Serializable {
     /**
      * 课程名称
      */
+    @NotEmpty(message = "课程名称不能为空")
     @TableField("name")
     private String name;
 
@@ -42,6 +47,9 @@ public class Course implements Serializable {
     @TableField("course_type_id")
     private Long courseTypeId;
 
+    /**
+     * 课程等级名称（冗余）
+     */
     @TableField("grade_name")
     private String gradeName;
 
@@ -55,7 +63,7 @@ public class Course implements Serializable {
      * 课程状态，下线：0 ， 上线：1
      */
     @TableField("status")
-    private Byte status;
+    private Integer status;
 
     /**
      * 添加课程的后台用户的ID
@@ -64,7 +72,7 @@ public class Course implements Serializable {
     private Long loginId;
 
     /**
-     * 添加课程的后台用户
+     * 添加课程的后台用户（冗余）
      */
     @TableField("login_user_name")
     private String loginUserName;
@@ -72,14 +80,18 @@ public class Course implements Serializable {
     /**
      * 课程的开课时间
      */
+
     @TableField("start_time")
-    private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    private Date startTime;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")    不经过jackson转换的日期处理
 
     /**
      * 课程的节课时间
      */
     @TableField("end_time")
-    private LocalDateTime endTime;
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    private Date endTime;
 
     /**
      * 封面，云存储地址
@@ -156,11 +168,11 @@ public class Course implements Serializable {
         this.gradeId = gradeId;
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -180,19 +192,19 @@ public class Course implements Serializable {
         this.loginUserName = loginUserName;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -239,22 +251,22 @@ public class Course implements Serializable {
     @Override
     public String toString() {
         return "Course{" +
-            "id = " + id +
-            ", name = " + name +
-            ", forUser = " + forUser +
-            ", courseTypeId = " + courseTypeId +
-            ", gradeName = " + gradeName +
-            ", gradeId = " + gradeId +
-            ", status = " + status +
-            ", loginId = " + loginId +
-            ", loginUserName = " + loginUserName +
-            ", startTime = " + startTime +
-            ", endTime = " + endTime +
-            ", pic = " + pic +
-            ", totalMinute = " + totalMinute +
-            ", onlineTime = " + onlineTime +
-            ", chapterCount = " + chapterCount +
-            ", teacherNames = " + teacherNames +
-            "}";
+                "id = " + id +
+                ", name = " + name +
+                ", forUser = " + forUser +
+                ", courseTypeId = " + courseTypeId +
+                ", gradeName = " + gradeName +
+                ", gradeId = " + gradeId +
+                ", status = " + status +
+                ", loginId = " + loginId +
+                ", loginUserName = " + loginUserName +
+                ", startTime = " + startTime +
+                ", endTime = " + endTime +
+                ", pic = " + pic +
+                ", totalMinute = " + totalMinute +
+                ", onlineTime = " + onlineTime +
+                ", chapterCount = " + chapterCount +
+                ", teacherNames = " + teacherNames +
+                "}";
     }
 }

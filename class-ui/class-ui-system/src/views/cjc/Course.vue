@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :model="filters" :inline="true">
         <el-form-item>
-          <el-input v-model="filters.keywords" size="small"  placeholder="关键字" ></el-input>
+          <el-input v-model="filters.keywords" size="small" placeholder="关键字"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="warning" v-on:click="getCourses" size="small" icon="el-icon-search">查询课程</el-button>
@@ -25,19 +25,19 @@
     </el-col>
 
     <!--列表v-loading="listLoading"-->
-    <el-table @row-click="rowClick" :data="courses" v-loading="listLoading"  @selection-change="selsChange"
-              highlight-current-row  style="width: 100%;">
+    <el-table @row-click="rowClick" :data="courses" v-loading="listLoading" @selection-change="selsChange"
+              highlight-current-row style="width: 100%;">
       <!--多选框-->
-      <el-table-column type="selection" width="55">
+      <el-table-column type="selection" width="55e">
       </el-table-column>
       <!--其他都设置值,只有一个不设置值就自动适应了-->
-      <el-table-column prop="name" label="课程名称" >
+      <el-table-column prop="name" label="课程名称">
       </el-table-column>
-      <el-table-column prop="chapterCount" label="章节数" >
+      <el-table-column prop="chapterCount" label="章节数">
       </el-table-column>
       <!--<el-table-column prop="courseType.name" label="类型">-->
       <!--</el-table-column>-->
-      <el-table-column prop="gradeName" label="等级" >
+      <el-table-column prop="gradeName" label="等级">
       </el-table-column>
       <el-table-column prop="status" label="状态" :formatter="statusFormatter">
       </el-table-column>
@@ -49,28 +49,31 @@
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template scope="scope">
-          <el-button size="small"  @click="edit(scope.row)" icon="el-icon-edit" type="primary">编辑</el-button>
+          <el-button size="small" @click="edit(scope.row)" icon="el-icon-edit" type="primary">编辑</el-button>
           <el-button type="danger" size="small" @click="del(scope.row)" icon="el-icon-remove">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-button type="danger"  @click="batchRemove" :disabled="this.sels.length===0" icon="el-icon-remove" size="small">批量删除</el-button>
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange"  :page-size="10" :total="total" style="float:right;">
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0" icon="el-icon-remove" size="small">
+        批量删除
+      </el-button>
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+                     style="float:right;">
       </el-pagination>
     </el-col>
 
-    <!--新增/编辑界面（复用）-->
-    <el-dialog :title="isEdit ? '编辑课程' : '新增课程'" :visible.sync="addFormVisible"  :close-on-click-modal="false" width="860px">
-      <el-form :inline="true" :model="addForm" label-width="80px"  ref="addForm" :rules="formRules">
-        <el-form-item label="课程名称" prop="name" >
-          <el-input v-model="addForm.name" placeholder="课程名称" auto-complete="off" style="width: 300px" />
+    <!--新增界面-->
+    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" width="860px">
+      <el-form :inline="true" :model="addForm" label-width="80px" ref="addForm">
+        <el-form-item label="课程名称" prop="name">
+          <el-input v-model="addForm.name" placeholder="课程名称" auto-complete="off" style="width: 300px"/>
         </el-form-item>
         <el-form-item label="适用人群" prop="forUser">
           <el-input v-model="addForm.forUser" placeholder="适用人群" auto-complete="off" style="width: 300px"/>
         </el-form-item>
-        <el-form-item label="课程类型" prop="courseTypeId" >
+        <el-form-item label="课程类型" prop="courseTypeId">
           <el-cascader style="width: 300px"
                        :props="courseTypeProps"
                        v-model="addForm.courseTypeId"
@@ -92,74 +95,84 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="课程周期" >
-          <el-date-picker  style="width: 200px"
-                           v-model="addForm.startTime"
-                           type="date"
-                           value-format="yyyy-MM-dd"
-                           size="small"
-                           placeholder="课程开始日期">
-          </el-date-picker> -
-          <el-date-picker   style="width: 200px"
-                            v-model="addForm.endTime"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            size="small"
-                            placeholder="课程结束日期">
+        <el-form-item label="课程周期">
+          <el-date-picker style="width: 200px"
+                          v-model="addForm.startTime"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          size="small"
+                          placeholder="课程开始日期">
           </el-date-picker>
-        </el-form-item >
-
-        <el-form-item label="购买可看" >
-          <el-input placeholder="可看天数"  type="number" v-model="addForm.validDays" auto-complete="off" style="width: 165px"/>&nbsp;天
+          -
+          <el-date-picker style="width: 200px"
+                          v-model="addForm.endTime"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          size="small"
+                          placeholder="课程结束日期">
+          </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="课程等级" prop="gradeId"  style="width: 700px">
+        <el-form-item label="购买可看">
+          <el-input placeholder="可看天数" type="number" v-model="addForm.validDays" auto-complete="off"
+                    style="width: 165px"/>&nbsp;天
+        </el-form-item>
+
+        <el-form-item label="课程等级" prop="courseTypeId" style="width: 700px">
           <el-radio-group v-model="addForm.gradeId">
-            <el-radio v-for="grade in grades" :label="grade.id">{{grade.name}}</el-radio>
+            <el-radio v-for="grade in grades" :label="grade.id">{{ grade.name }}</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item prop="logo" style="width: 400px" >
+        <el-form-item prop="logo" style="width: 400px">
           <!--<el-input type="text" v-model="employee.logo" auto-complete="off" placeholder="请输入logo！"></el-input>-->
           <el-upload
               class="upload-demo"
-              action="http://localhost:10010/ymcc/common/oss/uploadFile"
+              :action="uploadUrl"
               name="fileName"
               :data="uploadPicData"
               list-type="picture"
               :on-success="handlePicSuccess"
-              :limit="1">
-            <el-button size="small" type="primary"  icon="el-icon-picture-outline">上传封面</el-button>
-            &nbsp;&nbsp;<span slot="tip" class="el-upload__tip">支持500kb，格式jpg</span>
+              :limit="1"
+              :before-upload="beforePicUpload"
+              :on-remove="handlePicRemove"
+          >
+          <el-button size="small" type="primary" icon="el-icon-picture-outline">上传封面</el-button>
+          &nbsp;&nbsp;<span slot="tip" class="el-upload__tip">支持500kb，格式jpg</span>
           </el-upload>
         </el-form-item>
 
-        <el-form-item prop="logo"  >
+        <el-form-item prop="logo">
           <!--<el-input type="text" v-model="employee.logo" auto-complete="off" placeholder="请输入logo！"></el-input>-->
           <el-upload
               class="upload-demo"
-              action="http://localhost:10010/ymcc/common/oss/uploadFile"
+              :action="uploadUrl"
               :data="uploadZipData"
               name="fileName"
               :on-success="handleZipSuccess"
-              :limit="1">
-            <el-button size="small" type="primary" icon="el-icon-upload">上传课件</el-button>
-            &nbsp;&nbsp;<span slot="tip" class="el-upload__tip">支持压缩格式</span>
+              :limit="1"
+              :before-upload="beforeZipUpload"
+              :on-remove="handleZipRemove"
+          >
+          <el-button size="small" type="primary" icon="el-icon-upload">上传课件</el-button>
+          &nbsp;&nbsp;<span slot="tip" class="el-upload__tip">支持压缩格式</span>
           </el-upload>
         </el-form-item>
         <el-divider></el-divider>
 
-        <el-form-item label="收费规则" prop="chargeId" size="width:100%">
+        <el-form-item label="收费规则" prop="gradeId" size="width:100%">
           <el-radio-group v-model="addForm.chargeId">
-            <el-radio @change="changeCharge" v-for="charge in charges" :label="charge.id">{{charge.name}}</el-radio>
+            <el-radio @change="changeCharge" v-for="charge in charges" :label="charge.id">{{ charge.name }}</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="课程价格" prop="price">
-          <el-input :disabled="priceDisabled" type="number" v-model="addForm.price" auto-complete="off" style="width: 185px"/>
+          <el-input :disabled="priceDisabled" type="number" v-model="addForm.price" auto-complete="off"
+                    style="width: 185px"/>
         </el-form-item>
         <el-form-item label="课程原价">
-          <el-input :disabled="priceDisabled" type="number" v-model="addForm.priceOld" auto-complete="off" style="width: 185px"/>
+          <el-input :disabled="priceDisabled" type="number" v-model="addForm.priceOld" auto-complete="off"
+                    style="width: 185px"/>
         </el-form-item>
 
         <el-form-item label="咨询QQ" prop="qq">
@@ -191,16 +204,15 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false" icon="el-icon-remove">取消</el-button>
-        <el-button type="primary" @click.native="addSubmit" icon="el-icon-check" >提交</el-button>
+        <el-button type="primary" @click.native="addSubmit" icon="el-icon-check">提交</el-button>
       </div>
     </el-dialog>
 
 
-
-    <el-dialog title="添加秒杀课程" :visible.sync="killCourseFormVisible"  :close-on-click-modal="false">
-      <el-form :model="killCourseForm" label-width="80px"  ref="addForm">
+    <el-dialog title="添加秒杀课程" :visible.sync="killCourseFormVisible" :close-on-click-modal="false">
+      <el-form :model="killCourseForm" label-width="80px" ref="addForm">
         <el-form-item label="课程名字" prop="price">
-          <el-input :disabled="true"  v-model="killCourseForm.courseName" auto-complete="off"></el-input>
+          <el-input :disabled="true" v-model="killCourseForm.courseName" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="秒杀活动" prop="activityId">
@@ -217,7 +229,7 @@
         </el-form-item>
 
         <el-form-item label="秒杀价格" prop="price">
-          <el-input  v-model="killCourseForm.killPrice" auto-complete="off"></el-input>
+          <el-input v-model="killCourseForm.killPrice" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="秒杀数量" prop="name">
@@ -245,14 +257,14 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="killCourseFormVisible = false" icon="el-icon-remove">取消</el-button>
-        <el-button type="primary" @click.native="addKillCourseSubmit"  icon="el-icon-check">提交</el-button>
+        <el-button type="primary" @click.native="addKillCourseSubmit" icon="el-icon-check">提交</el-button>
       </div>
     </el-dialog>
   </section>
 </template>
 
 <script>
-import {quillEditor} from "vue-quill-editor"; //调用编辑器
+import {quillEditor} from "vue-quill-editor";
 import "quill/dist/quill.core.css"
 import "quill/dist/quill.snow.css"
 import "quill/dist/quill.bubble.css"
@@ -260,14 +272,16 @@ import "quill/dist/quill.bubble.css"
 export default {
   computed: {
     editor() {
+      // 增加空值保护，避免编辑器未初始化报错
       return this.$refs.myQuillEditor.quill
     }
   },
-  components: {//使用编辑器
+  components: {
     quillEditor
   },
   data() {
     return {
+      uploadUrl:this.$http.defaults.baseURL+"/common/oss/uploadFile",
       uploadPicData: {},
       uploadZipData: {},
       uploadResource: {
@@ -280,7 +294,7 @@ export default {
         label: "name"
       },
       priceDisabled: true,
-      editorOption: {},//富文本编辑框配置
+      editorOption: {},
       grades: [
         {id: 1, name: "青铜"}, {id: 2, name: "白银"}, {id: 3, name: "黄金"}, {id: 4, name: "白金"}, {
           id: 5,
@@ -294,29 +308,19 @@ export default {
       teachers: [],
       courseTypes: [],
       addFormVisible: false,
-      isEdit: false, // 新增：区分新增/编辑模式
-      //表单验证规则
-      formRules: {
-        name: [{required: true, message: '课程名称不能为空', trigger: 'blur'}],
-        forUser: [{required: true, message: '适用人群不能为空', trigger: 'blur'}],
-        gradeId: [{required: true, message: '请选择课程等级', trigger: 'change'}],
-        courseTypeId: [{required: true, message: '请选择课程类型', trigger: 'change'}]
-      },
-      //images:[xxx.jgp,xxxx,jpg,xxxx.jpg],
       killActivitys: [],
       addForm: {
-        id: '', // 新增：课程ID（编辑时用）
         startTime: '',
         endTime: '',
         validDays: '',
         name: '',
         forUser: '',
         gradeId: '',
-        teacharIds: [], // 修正：原拼写错误 teacharIds -> 改为数组类型
-        courseTypeId: [], // 级联选择器值为数组
+        teacharIds: [], // 修复：多选讲师默认值改为数组，避免传递字符串
+        courseTypeId: [], // 修复：级联选择器默认值改为数组
         description: '',
         intro: '',
-        chargeId: '',
+        chargeId: 1, // 修复：默认值设为1（免费），避免空值
         price: '',
         priceOld: '',
         qq: '',
@@ -324,15 +328,13 @@ export default {
         zipResources: ''
       },
       listLoading: false,
-      //查询对象
       filters: {
         keywords: ''
       },
-      page: 1,//当前页,要传递到后台的
-      total: 0, //分页总数
-      courses: [], //当前页数据
-      sels: [], // 修正：初始化为数组，而非字符串
-      //秒杀相关================
+      page: 1,
+      total: 0,
+      courses: [],
+      sels: [], // 修复：默认值改为数组
       killCourseFormVisible: false,
       killCourseForm: {
         courseId: "",
@@ -348,6 +350,38 @@ export default {
     }
   },
   methods: {
+    // 封面文件×号点击事件：判断并删除OSS文件
+    async handlePicRemove(file, fileList) {
+      if (file.response && file.response.data) {
+        await this.deleteOssFile(file.response.data);
+      }
+      this.addForm.pic = "";
+    },
+
+    // 课件文件×号点击事件：判断并删除OSS文件
+    async handleZipRemove(file, fileList) {
+      if (file.response && file.response.data) {
+        await this.deleteOssFile(file.response.data);
+      }
+      this.addForm.zipResources = "";
+    },
+
+    // 调用后端删除OSS文件的核心函数
+    async deleteOssFile(fileUrl) {
+      try {
+        const res = await this.$http.delete("/common/oss/deleteFile", {
+          params: { fileUrl: fileUrl }
+        });
+        if (res.data.success) {
+          this.$message({ message: "文件删除成功", type: "success" });
+        } else {
+          this.$message({ message: res.data.message, type: "error" });
+        }
+      } catch (error) {
+        this.$message({ message: "文件删除失败：" + error.message, type: "error" });
+      }
+    },
+
     //秒杀相关
     getKillActivitys() {
       this.$http.get("/kill/killActivity/list").then(result => {
@@ -361,23 +395,26 @@ export default {
         this.$message({message: error.message, type: 'error'});
       });
     },
+
     killCourseModelView() {
-      //获取选中的行
       if (!this.row || this.row === "") {
         this.$message({message: '老铁，请选择数据', type: 'error'});
         return;
       }
-      this.killCourseForm.killCount = "";
-      this.killCourseForm.killPrice = "";
-      this.killCourseForm.startTime = "";
-      this.killCourseForm.endTime = "";
-
-      this.killCourseForm.courseId = this.row.id;
-      this.killCourseForm.courseName = this.row.name;
-      this.killCourseForm.coursePic = this.row.pic;
-      this.killCourseForm.teacherNames = this.row.teacherNames;
+      this.killCourseForm = {
+        ...this.killCourseForm,
+        killCount: "",
+        killPrice: "",
+        startTime: "",
+        endTime: "",
+        courseId: this.row.id,
+        courseName: this.row.name,
+        coursePic: this.row.pic,
+        teacherNames: this.row.teacherNames
+      };
       this.killCourseFormVisible = true;
     },
+
     addKillCourseSubmit() {
       this.$http.post("/kill/killCourse/save", this.killCourseForm).then(res => {
         var ajaxResult = res.data;
@@ -387,7 +424,6 @@ export default {
             type: 'success'
           });
           this.killCourseFormVisible = false;
-          //this.getCourses();
         } else {
           this.$message({message: ajaxResult.message, type: 'error'});
         }
@@ -395,122 +431,169 @@ export default {
         this.$message({message: '保存失败!', type: 'error'});
       })
     },
+
+    // 修复：重构getSign方法，纯async/await写法，避免then混用
     async getSign(data) {
-      //让这个请求变成同步请求
-      await this.$http.get("/common/oss/sign").then(response => {
-        //设置相关的参数
-        var resultObj = response.data.data;
-        data.policy = resultObj.policy;
-        data.signature = resultObj.signature;
-        data.ossaccessKeyId = resultObj.accessid;
-        data.dir = resultObj.dir;
-        data.host = resultObj.host;
-        //上传的文件名，使用UUID处理一下
-        data.key = resultObj.dir + '/' + this.getUUID() + '_${filename}';
-      });
+      try {
+        const response = await this.$http.get("/common/oss/sign");
+        const resultObj = response.data.data;
+        // 清空原有数据，避免参数污染
+        Object.assign(data, {
+          policy: resultObj.policy,
+          signature: resultObj.signature,
+          ossaccessKeyId: resultObj.accessid,
+          dir: resultObj.dir,
+          host: resultObj.host,
+          key: `${resultObj.dir}/${this.getUUID()}_\${filename}`
+        });
+      } catch (error) {
+        this.$message({message: "获取上传签名失败：" + error.message, type: "error"});
+        // 抛出错误，让beforeUpload拦截上传
+        throw error;
+      }
     },
-    //文件上传===============================================================
+
+    //文件上传相关
     getUUID() {
       var s = [];
       var hexDigits = "0123456789abcdef";
       for (var i = 0; i < 36; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
       }
-      s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      s[14] = "4";
+      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
       s[8] = s[13] = s[18] = s[23] = "-";
       var uuid = s.join("");
       return uuid;
     },
-    async beforePicUpload() {
+
+    // 修复：beforePicUpload增加文件校验+纯async/await
+    async beforePicUpload(file) {
+      // 1. 校验文件是否存在
+      if (!file) {
+        this.$message({message: "请选择要上传的图片文件", type: "warning"});
+        return false;
+      }
+      // 2. 校验文件大小（500kb）
+      const isLt500K = file.size / 1024 < 500;
+      if (!isLt500K) {
+        this.$message({message: '封面图片大小不能超过500KB!', type: 'error'});
+        return false;
+      }
+      // 3. 校验文件格式
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg';
+      if (!isJPG) {
+        this.$message({message: '封面图片仅支持jpg格式!', type: 'error'});
+        return false;
+      }
+      // 4. 获取签名（确保签名获取完成再上传）
       await this.getSign(this.uploadPicData);
+      return true;
     },
-    async beforeZipUpload() {
+
+    // 修复：beforeZipUpload增加文件校验+纯async/await
+    async beforeZipUpload(file) {
+      // 1. 校验文件是否存在
+      if (!file) {
+        this.$message({message: "请选择要上传的课件文件", type: "warning"});
+        return false;
+      }
+      // 2. 获取签名（确保签名获取完成再上传）
       await this.getSign(this.uploadZipData);
+      return true;
     },
+
     handlePicSuccess(res, file) {
-      //console.debug(res,file);
       this.addForm.pic = res.data;
-      this.$message({message: '上传成功', type: 'success'});
+      this.$message({message: '封面上传成功', type: 'success'});
     },
+
     handleZipSuccess(res, file) {
-      //上传的完整的文件地址
       this.addForm.zipResources = res.data;
-      this.$message({message: '上传成功', type: 'success'});
+      this.$message({message: '课件上传成功', type: 'success'});
     },
+
     addSubmit() {
-      // 表单验证
-      this.$refs.addForm.validate((valid) => {
-        if (!valid) return;
-
+      // 修复：判断级联选择器值是否为数组
+      if (Array.isArray(this.addForm.courseTypeId) && this.addForm.courseTypeId.length > 0) {
         this.addForm.courseTypeId = this.addForm.courseTypeId[this.addForm.courseTypeId.length - 1];
-        var gradeName;
-        for (var i = 0; i < this.grades.length; i++) {
-          var grade = this.grades[i];
-          if (grade.id === this.addForm.gradeId) {
-            gradeName = grade.name;
-            break;
-          }
+      }
+
+      var gradeName = "";
+      for (var i = 0; i < this.grades.length; i++) {
+        var grade = this.grades[i];
+        if (grade.id === this.addForm.gradeId) {
+          gradeName = grade.name;
+          break;
         }
+      }
 
-        var param = {
-          course: {
-            id: this.addForm.id, // 新增：编辑时传递ID
-            courseTypeId: this.addForm.courseTypeId,
-            name: this.addForm.name,
-            forUser: this.addForm.forUser,
-            gradeId: this.addForm.gradeId,
-            gradeName: gradeName,
-            pic: this.addForm.pic,
-            startTime: this.addForm.startTime,
-            endTime: this.addForm.endTime
-          },
-          courseDetail: {
-            description: this.addForm.description,
-            intro: this.addForm.intro
-          },
-          courseMarket: {
-            charge: this.addForm.chargeId,
-            qq: this.addForm.qq,
-            price: this.addForm.price,
-            priceOld: this.addForm.priceOld,
-            validDays: this.addForm.validDays
-          },
-          courseResource: {
-            resources: this.addForm.zipResources,
-            type: 0	//课件
-          },
-          teacharIds: this.addForm.teacharIds
-        };
+      var param = {
+        course: {
+          courseTypeId: this.addForm.courseTypeId,
+          name: this.addForm.name,
+          forUser: this.addForm.forUser,
+          gradeId: this.addForm.gradeId,
+          gradeName: gradeName,
+          pic: this.addForm.pic,
+          startTime: this.addForm.startTime,
+          endTime: this.addForm.endTime
+        },
+        courseDetail: {
+          description: this.addForm.description,
+          intro: this.addForm.intro
+        },
+        courseMarket: {
+          charge: this.addForm.chargeId,
+          qq: this.addForm.qq,
+          price: this.addForm.price,
+          priceOld: this.addForm.priceOld,
+          validDays: this.addForm.validDays
+        },
+        courseResource: {
+          resources: this.addForm.zipResources,
+          type: 0
+        },
+        teacharIds: this.addForm.teacharIds
+      };
 
-        this.$http.post("/course/course/save", param).then(res => {
-          var ajaxResult = res.data;
-          if (ajaxResult.success) {
-            this.$message({
-              message: this.isEdit ? '编辑成功!' : '保存成功!',
-              type: 'success'
-            });
-            this.addFormVisible = false;
-            this.getCourses();
-          } else {
-            this.$message({
-              message: '提交失败[' + res.data.message + "]",
-              type: 'error'
-            });
-          }
+      this.$http.post("/course/course/save", param).then(res => {
+        var ajaxResult = res.data;
+        if (ajaxResult.success) {
+          this.$message({
+            message: '保存成功!',
+            type: 'success'
+          });
+          this.addFormVisible = false;
+          this.getCourses();
+        } else {
+          this.$message({
+            message: '提交失败[' + res.data.message + "]",
+            type: 'error'
+          });
+        }
+      }).catch(error => {
+        this.$message({
+          message: '提交异常：' + error.message,
+          type: 'error'
         });
       });
     },
+
     getGrades() {
       this.$http.get("/system/systemdictionaryitem/listBySn/dj").then(result => {
         this.grades = result.data.data;
       });
     },
+
     getCourseTypes() {
       this.$http.get("/course/courseType/treeData").then(result => {
         this.courseTypes = result.data.data;
+      }).catch(error => {
+        this.$message({message: "获取课程类型失败：" + error.message, type: "error"});
       });
     },
+
     changeCharge(chargeId) {
       if (chargeId === 1) {
         this.priceDisabled = true;
@@ -520,68 +603,40 @@ export default {
         this.priceDisabled = false;
       }
     },
-    onEditorReady(editor) {
-      //当富文本编辑框初始化好执行
-    },
+
+    onEditorReady(editor) {},
+
     addHandler() {
-      this.isEdit = false; // 新增模式
-      // 重置表单
-      this.addForm = {
-        id: '',
-        startTime: '',
-        endTime: '',
-        validDays: '',
-        name: '',
-        forUser: '',
-        gradeId: '',
-        teacharIds: [],
-        courseTypeId: [],
-        description: '',
-        intro: '',
-        chargeId: '',
-        price: '',
-        priceOld: '',
-        qq: '',
-        pic: '',
-        zipResources: ''
-      };
-      // 重置表单验证
-      this.$nextTick(() => {
-        this.$refs.addForm.resetFields();
-      });
       this.addFormVisible = true;
     },
+
     handleCurrentChange(curentPage) {
       this.page = curentPage;
       this.getCourses();
     },
+
     getCourses() {
-      //发送Ajax请求后台获取数据  axios
-      //添加分页条件及高级查询条件
       let para = {
         "page": this.page,
-        "rows": 10, // 补充：后端需要rows参数
         "keyword": this.filters.keywords
       };
-      this.listLoading = true; //显示加载圈
-      //分页查询
+      this.listLoading = true;
       this.$http.post("/course/course/pagelist", para).then(result => {
         this.total = result.data.data.total;
         this.courses = result.data.data.rows;
-        this.listLoading = false;  //关闭加载圈
+        this.listLoading = false;
       }).catch(error => {
         this.$message({message: error.message, type: 'error'});
         this.listLoading = false;
       });
     },
+
     onLineCourse() {
-      //获取选中的行
       if (!this.row || this.row.length === 0) {
         this.$message({message: '老铁，你不选中数据，臣妾上不了啊....', type: 'error'});
         return;
       }
 
-      // 获取this.row中的所有id
       var arrId = [];
       for (var i = 0; i < this.row.length; i++) {
         arrId.push(this.row[i].id);
@@ -594,23 +649,20 @@ export default {
         } else {
           this.$message({message: ajaxResult.message, type: 'error'});
         }
-        // 清空
-        arrId.length = 0;
       }).catch(error => {
         this.$message({message: error.message, type: 'error'});
       });
-
     },
+
     offLineCourse() {
-      //获取选中的行
-      if (!this.row || (typeof this.row === 'object' && this.row.length === 0)) {
+      if (!this.row || this.row === "") {
         this.$message({message: '老铁，你不选中数据，臣妾下不了啊....', type: 'error'});
         return;
       }
-      // 兼容单行/多行选中
-      const ids = Array.isArray(this.row) ? this.row.map(item => item.id) : [this.row.id];
 
-      this.$http.post("/course/course/offLineCourse/" + ids[0]).then(res => {
+      // 修复：判断row是否为数组（批量选择）
+      const id = Array.isArray(this.row) ? this.row[0].id : this.row.id;
+      this.$http.post("/course/course/offLineCourse/" + id).then(res => {
         var ajaxResult = res.data;
         if (ajaxResult.success) {
           this.$message({message: '老铁，下线成功.', type: 'success'});
@@ -620,173 +672,53 @@ export default {
         }
       }).catch(error => {
         this.$message({message: error.message, type: 'error'});
-      })
+      });
     },
+
     rowClick(row) {
-      console.debug(row, "===================");
       this.row = row;
     },
+
     statusFormatter: function (row, column) {
       return row.status == 1 ? '已上线' : '未上线';
     },
 
-    //讲师
     getTeachers() {
       this.$http.get("/course/teacher/list")
           .then(result => {
             this.teachers = result.data.data;
-            console.log(this.teachers)
           }).catch(error => {
         this.$message({message: error.message, type: 'error'});
       });
     },
 
-    // ========== 新增：编辑课程功能 ==========
-    edit(row) {
-      if (!row || !row.id) {
-        this.$message.warning('请选择有效的课程进行编辑！');
-        return;
-      }
-      this.isEdit = true; // 标记为编辑模式
-      this.listLoading = true;
-      // 获取课程详情
-      this.$http.get(`/course/course/${row.id}`)
-          .then(res => {
-            if (res.data.success) {
-              const course = res.data.data;
-              // 回显表单数据
-              this.addForm = {
-                id: course.id,
-                name: course.name || '',
-                forUser: course.forUser || '',
-                gradeId: course.gradeId || '',
-                gradeName: course.gradeName || '',
-                courseTypeId: course.courseTypeId ? [course.courseTypeId] : [], // 级联选择器适配
-                teacharIds: course.teacharIds || [],
-                startTime: course.startTime || '',
-                endTime: course.endTime || '',
-                validDays: course.validDays || '',
-                chargeId: course.charge || '',
-                price: course.price || '',
-                priceOld: course.priceOld || '',
-                qq: course.qq || '',
-                pic: course.pic || '',
-                zipResources: course.zipResources || '',
-                description: course.description || '',
-                intro: course.intro || ''
-              };
-              // 处理收费规则禁用状态
-              this.priceDisabled = this.addForm.chargeId === 1;
-              // 打开弹窗
-              this.addFormVisible = true;
-            } else {
-              this.$message.error('获取课程详情失败：' + res.data.message);
-            }
-            this.listLoading = false;
-          })
-          .catch(error => {
-            this.$message.error('请求异常：' + error.message);
-            this.listLoading = false;
-          });
+    edit() {
+      this.$message({message: "功能未开放", type: 'error'});
     },
 
-    // ========== 新增：单个删除功能 ==========
-    del(row) {
-      if (!row || !row.id) {
-        this.$message.warning('请选择有效的课程进行删除！');
-        return;
-      }
-      this.$confirm(`确定要删除课程【${row.name}】吗？删除后不可恢复！`, '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.listLoading = true;
-        // 调用后端删除接口
-        this.$http.delete(`/course/course/${row.id}`)
-            .then(res => {
-              if (res.data.success) {
-                this.$message.success('删除成功！');
-                this.getCourses(); // 刷新列表
-              } else {
-                this.$message.error('删除失败：' + res.data.message);
-              }
-              this.listLoading = false;
-            })
-            .catch(error => {
-              this.$message.error('删除异常：' + error.message);
-              this.listLoading = false;
-            });
-      }).catch(() => {
-        this.$message.info('已取消删除');
-      });
+    del() {
+      this.$message({message: "功能未开放", type: 'error'});
     },
 
-    // ========== 新增：批量删除功能 ==========
     batchRemove() {
-      if (this.sels.length === 0) {
-        this.$message.warning('请选择要删除的课程！');
-        return;
-      }
-      const courseNames = this.sels.map(item => item.name).join('、');
-      this.$confirm(`确定要批量删除选中的【${courseNames}】等${this.sels.length}门课程吗？删除后不可恢复！`, '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.listLoading = true;
-        // 方式1：循环调用单个删除接口（后端无批量接口时）
-        const deletePromises = this.sels.map(item =>
-            this.$http.delete(`/course/course/${item.id}`)
-        );
-        // 等待所有删除请求完成
-        Promise.all(deletePromises)
-            .then(results => {
-              const failCount = results.filter(res => !res.data.success).length;
-              if (failCount === 0) {
-                this.$message.success(`批量删除成功！共删除${this.sels.length}门课程`);
-              } else {
-                this.$message.warning(`部分课程删除失败，成功删除${this.sels.length - failCount}门`);
-              }
-              this.getCourses(); // 刷新列表
-              this.sels = []; // 清空选中
-              this.listLoading = false;
-            })
-            .catch(error => {
-              this.$message.error('批量删除异常：' + error.message);
-              this.listLoading = false;
-            });
-
-        // 方式2：如果后端新增批量删除接口，可替换为：
-        // const ids = this.sels.map(item => item.id).join(',');
-        // this.$http.delete(`/course/course/batch/${ids}`)
-        // 	.then(res => { ... });
-      }).catch(() => {
-        this.$message.info('已取消批量删除');
-      });
+      this.$message({message: "功能未开放", type: 'error'});
     },
 
-    // 选中行变化
     selsChange(sels) {
-      console.debug(sels);
-      this.row = sels; // 批量操作时用
+      this.row = sels;
       this.sels = sels;
     },
   },
 
   mounted() {
     this.getCourses();
-    //this.getGrades();
     this.getCourseTypes();
     this.getTeachers();
     this.getKillActivitys();
   }
 }
-
 </script>
 
 <style scoped>
-.edit_container {
-  min-height: 200px;
-}
+
 </style>

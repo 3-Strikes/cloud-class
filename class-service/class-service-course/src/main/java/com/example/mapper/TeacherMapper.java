@@ -1,7 +1,11 @@
 package com.example.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.domain.CourseTeacher;
 import com.example.domain.Teacher;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.example.domain.Teacher;
  */
 public interface TeacherMapper extends BaseMapper<Teacher> {
 
+    List<String> selectNamesByIds(List<Long> teacharIds);
+
+    List<CourseTeacher> selectList(LambdaQueryWrapper<CourseTeacher> eq);
 }

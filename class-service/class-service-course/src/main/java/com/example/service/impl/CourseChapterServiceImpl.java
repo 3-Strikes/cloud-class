@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseChapterServiceImpl extends ServiceImpl<CourseChapterMapper, CourseChapter> implements CourseChapterService {
 
+    @Override
+    public Integer getMaxChapterNumber(Long courseId) {
+        return this.baseMapper.getMaxChapterNumber(courseId);
+    }
 }

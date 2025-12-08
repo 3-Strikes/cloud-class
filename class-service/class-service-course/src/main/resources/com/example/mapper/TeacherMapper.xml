@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.TeacherMapper">
 
+    <select id="selectNamesByIds" resultType="java.lang.String">
+        select name from t_teacher where id in
+        <foreach item="id" collection="list" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+<!--    <select id="selectList" resultType="com.example.domain.CourseTeacher">-->
+<!--         select Distinct* from t_course_teacher-->
+<!--    </select>-->
 </mapper>

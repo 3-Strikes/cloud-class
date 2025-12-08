@@ -59,4 +59,6 @@ public class CourseDTO {
     public void setTeacharIds(List<Long> teacharIds) {
         this.teacharIds = teacharIds;
     }
+
+
 }

@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CourseChapterService extends IService<CourseChapter> {
 
+    Integer getMaxChapterNumber(Long courseId);
 }

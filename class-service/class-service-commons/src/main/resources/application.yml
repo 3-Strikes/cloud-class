@@ -32,6 +32,12 @@ sms:
   signName: 速通互联验证码
   templateCode: 100001
 
+oss:
+  akid: LTAI5tBMMMn9GnHUkb7Zyf5z
+  akSecret: mYOhkB0yWdlx3Tj01Q44dBgPc5hxR4
+  endpoint: oss-cn-shanghai.aliyuncs.com
+  region: cn-shanghai
+  bucketName: class-cloud
 #redis高可用集群的客户端连接配置
 #spring:
 #  data:
