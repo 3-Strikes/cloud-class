@@ -25,6 +25,12 @@ public class CourseChapterController {
 
     @Autowired
     private CourseChapterMapper courseChapterMapper;
+
+    @GetMapping("listByCourseId/{courseId}")
+    public JSONResult listChapterByCourseId(@PathVariable("courseId") Long courseId){
+        List<CourseChapter> list=courseChapterService.listByCourseId(courseId);
+        return JSONResult.success(list);
+    }
     /**
      * 保存和修改章节（自动更新课程章节数）
      */

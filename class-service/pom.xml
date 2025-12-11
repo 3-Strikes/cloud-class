@@ -17,6 +17,8 @@
         <module>class-service-user</module>
         <module>class-service-commons</module>
         <module>class-service-course</module>
+        <module>class-service-systemdictionary</module>
+        <module>class-service-media</module>
     </modules>
 
     <properties>

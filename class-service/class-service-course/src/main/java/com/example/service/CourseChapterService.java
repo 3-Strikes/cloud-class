@@ -3,6 +3,8 @@ package com.example.service;
 import com.example.domain.CourseChapter;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 课程章节 ， 一个课程，多个章节，一个章节，多个视频 服务类
@@ -14,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CourseChapterService extends IService<CourseChapter> {
 
     Integer getMaxChapterNumber(Long courseId);
+
+    List<CourseChapter> listByCourseId(Long courseId);
 }

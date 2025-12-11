@@ -14,6 +14,8 @@
     <modules>
         <module>class-api-system</module>
         <module>class-api-uaa</module>
+        <module>class-api-media</module>
+        <module>class-api-search</module>
     </modules>
 
     <properties>

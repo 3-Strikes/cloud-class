@@ -10,6 +10,12 @@
     </parent>
 
     <artifactId>class-pojo</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>class-pojo-media</module>
+        <module>class-pojo-systemdictionary</module>
+        <module>class-pojo-search</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

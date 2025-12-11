@@ -1,6 +1,5 @@
 package com.example.web.controller;
 
-import com.alibaba.nacos.common.utils.StringUtils;
 import com.example.service.CourseTypeService;
 import com.example.domain.CourseType;
 import com.example.query.CourseTypeQuery;
@@ -8,6 +7,7 @@ import com.example.result.JSONResult;
 import com.example.result.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

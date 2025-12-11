@@ -26,6 +26,7 @@
         <module>class-pojo/class-pojo-user</module>
         <module>class-pojo/class-pojo-course</module>
         <module>class-pojo/class-pojo-course</module>
+        <module>class-service/class-service-systemdictionary</module>
     </modules>
 
     <properties>
@@ -38,6 +39,7 @@
         <mp.version>3.5.14</mp.version>
         <mp-jsqlparser.version>3.5.14</mp-jsqlparser.version>
         <openapi.verison>2.1.0</openapi.verison>
+        <rocketmq.verison>2.3.0</rocketmq.verison>
     </properties>
 
     <!--    所有子工程直接继承-->
@@ -67,6 +69,11 @@
     <!--    不会自动继承，进行版本管理。子工程需要按需引入依赖，但不用指定版本-->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.verison}</version>
+            </dependency>
             <!-- 父pom的dependencyManagement中添加 -->
             <dependency>
                 <groupId>io.seata</groupId>

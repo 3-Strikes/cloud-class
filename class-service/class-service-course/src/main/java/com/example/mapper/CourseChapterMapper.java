@@ -1,18 +1,11 @@
 package com.example.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper; // 必须导入MyBatis-Plus的BaseMapper
 import com.example.domain.CourseChapter;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-/**
- * <p>
- * 课程章节 ， 一个课程，多个章节，一个章节，多个视频 Mapper 接口
- * </p>
- *
- * @author lzy
- * @since 2025-12-08
- */
+// 关键：继承 BaseMapper<CourseChapter>，泛型必须是实体类CourseChapter
 public interface CourseChapterMapper extends BaseMapper<CourseChapter> {
 
     /**

@@ -1,9 +1,13 @@
 package com.example.service;
 
+import com.example.doc.CourseDoc;
 import com.example.domain.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dto.CourseDTO;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -19,7 +23,12 @@ public interface CourseService extends IService<Course> {
     @Transactional
     void saveCourseDTO(CourseDTO courseDTO);
 
+
     CourseDTO getCourseDTOById(Long id);
 
     void updateCourseChapterCount(Long courseId);
+
+    List<CourseDoc> listCourseDoc(Set<Long> ids);
+
+    void sendPuslishMessage(List<CourseDoc> courseDocList);
 }

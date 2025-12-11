@@ -2,17 +2,22 @@ package com.example.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.constant.Constants;
+import com.example.doc.CourseDoc;
 import com.example.domain.*;
 import com.example.dto.CourseDTO;
 import com.example.mapper.*;
 import com.example.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,14 +32,16 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
     @Autowired
     private TeacherService teacherService;
-
     @Autowired
     private CourseDetailService detailService;
-
     @Autowired
     private CourseMarketService marketService;
     @Autowired
     private CourseResourceService resourceService;
+    @Autowired
+    private CourseSummaryService summaryService;
+//    @Autowired
+//    private RocketMQTemplate mqTemplate;
 
     @Autowired
     private CourseDetailMapper courseDetailMapper;
@@ -121,5 +128,99 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         course.setId(courseId);
         course.setChapterCount(chapterCount);
         this.updateById(course);
+    }
+
+    @Override
+    public List<CourseDoc> listCourseDoc(Set<Long> ids) {
+        if(CollectionUtil.isEmpty(ids)) return null;
+        List<CourseDoc> result=new ArrayList<>();
+
+        //查询课程基本信息
+        List<Course> courseList = this.list(Wrappers.lambdaQuery(Course.class).in(Course::getId,ids));
+        //查询课程价格信息
+        List<CourseMarket> list = marketService.list(Wrappers.lambdaQuery(CourseMarket.class).in(CourseMarket::getId, ids));
+        Map<Long, CourseMarket> marketMap = getMarketMap(list);
+        //查询课程统计信息
+        List<CourseSummary> summaryList = summaryService.list(Wrappers.lambdaQuery(CourseSummary.class).in(CourseSummary::getId, ids));
+        Map<Long, CourseSummary> summaryMap = getSummaryMap(summaryList);
+
+        //封装数据CourseDoc
+        for (Course course : courseList) {
+            CourseDoc doc=new CourseDoc();
+            BeanUtils.copyProperties(course,doc);
+
+            CourseMarket courseMarket = marketMap.get(course.getId());
+            BeanUtils.copyProperties(courseMarket,doc);
+
+            CourseSummary courseSummary = summaryMap.get(course.getId());
+            BeanUtils.copyProperties(courseSummary,doc);
+            result.add(doc);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void sendPuslishMessage(List<CourseDoc> courseDocList) {
+
+    }
+
+//    @Override
+//    public void sendPuslishMessage(List<CourseDoc> courseDocList) {
+//        //取集合中前2个课程，得到课程名 <a href="ssss.html?courseid=xxx">
+//        StringBuffer sb=new StringBuffer();
+//        String contents="尊敬的会员，平台新上课程[";
+//        if(courseDocList.size()>=2){
+//            for(int i=0;i<2;i++){
+//                CourseDoc courseDoc = courseDocList.get(i);
+//                String name = courseDoc.getName();
+//                sb.append(name+",");
+//            }
+//            contents=sb.substring(0,sb.length()-1)+"...";
+//        }else{
+//            for (CourseDoc courseDoc : courseDocList) {
+//                String name = courseDoc.getName();
+//                sb.append(name+",");
+//            }
+//            contents=sb.substring(0,sb.length()-1);
+//        }
+//        contents+="]已上架，请登录平台查看";
+//
+//        String topic = Constants.PUBLISH_COURSE_TOPIC;
+//        MessageStation messageStation=new MessageStation();
+//        messageStation.setTitle("新课程发布了");
+//        messageStation.setContent(contents);
+//        messageStation.setType("系统消息");
+//        messageStation.setSendTime(new Date());
+//        messageStation.setIsread(0);
+//        mqTemplate.sendOneWay(topic+":"+Constants.STATION_TAGS,messageStation);
+//
+//
+//        MessageSms sms=new MessageSms();
+//        sms.setTitle("新课程发布了");
+//        sms.setContent(contents);
+//        sms.setSendTime(new Date());
+//        mqTemplate.sendOneWay(topic+":"+Constants.SMS_TAGS,sms);
+//
+//        MessageEmail email=new MessageEmail();
+//        email.setTitle("新课程发布了");
+//        email.setContent(contents);
+//        email.setSendTime(new Date());
+//        mqTemplate.sendOneWay(topic+":"+Constants.EMAIL_TAGS,email);
+//    }
+
+    private Map<Long,CourseMarket> getMarketMap(List<CourseMarket> list) {
+        Map<Long,CourseMarket> map=new HashMap<>();
+        for (CourseMarket courseMarket : list) {
+            map.put(courseMarket.getId(),courseMarket);
+        }
+        return map;
+    }
+    private Map<Long,CourseSummary> getSummaryMap(List<CourseSummary> list) {
+        Map<Long,CourseSummary> map=new HashMap<>();
+        for (CourseSummary courseSummary : list) {
+            map.put(courseSummary.getId(),courseSummary);
+        }
+        return map;
     }
 }

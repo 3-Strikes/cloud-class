@@ -16,18 +16,8 @@ public class GenteratorCode {
         ResourceBundle rb = ResourceBundle.getBundle("mybatiesplus-config-system"); //加载配置文件
 
         String[] tables = {
-                "t_course",
-                "t_course_chapter",
-                "t_course_collect",
-                "t_course_detail",
-                "t_course_market",
-                "t_course_resource",
-                "t_course_summary",
-                "t_course_teacher",
-                "t_course_type",
-                "t_course_user_learn",
-                "t_course_view_log",
-                "t_teacher"
+                "t_systemdictionary",
+                "t_systemdictionaryitem"
         };
 
         FastAutoGenerator.create(rb.getString("jdbc.url"), rb.getString("jdbc.user"), rb.getString("jdbc.pwd"))
