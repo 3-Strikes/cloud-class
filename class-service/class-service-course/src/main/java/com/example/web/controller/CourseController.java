@@ -1,8 +1,12 @@
 package com.example.web.controller;
 
-import com.alibaba.nacos.common.utils.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.api.MediaServiceAPI;
+import com.example.api.SearchServiceAPI;
+import com.example.doc.CourseDoc;
 import com.example.domain.CourseType;
 import com.example.dto.CourseDTO;
+import com.example.enums.CourseStatus;
 import com.example.service.CourseService;
 import com.example.domain.Course;
 import com.example.query.CourseQuery;
@@ -12,12 +16,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.service.CourseTypeService;
 import com.example.util.OssUtil;
 import jakarta.validation.Valid;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/course")
@@ -29,7 +38,39 @@ public class CourseController {
     @Autowired
     public CourseTypeService courseTypeService;
 
-    @GetMapping("treeData")
+    @Autowired
+    private MediaServiceAPI mediaServiceAPI;
+
+    @Autowired
+    private SearchServiceAPI searchServiceAPI;
+
+    @Transactional
+    @PostMapping("onLineCourse")
+    public JSONResult onLineCourse(@RequestBody List<Long> courseIds){
+        //检测课程状态(未发布，已推流)
+        //先筛选出去已发布，只保理未发布的课程  id in (ids)  and status = 0
+        List<Course> courseList = courseService.list(Wrappers.lambdaQuery(Course.class).in(Course::getId,courseIds).eq(Course::getStatus, CourseStatus.UN_LINE.getCode()));
+        courseIds= courseList.stream().map(Course::getId).collect(Collectors.toList());//所有未发布的课程id
+        if(courseIds.size()==0) return JSONResult.success();
+        //课程视频状态检测(远程接口调用)
+        JSONResult<Set<Long>> setJSONResult = mediaServiceAPI.listPushEnd(courseIds);
+        Set<Long> ids = setJSONResult.getData();//所有视频已推流的课程id
+
+        //2.修改课程状态（已发布） set status=已发布 ，onlineTime=new date（）  where id in ids
+        courseService.update(Wrappers.lambdaUpdate(Course.class).set(Course::getStatus, CourseStatus.ON_LINE.getCode()).set(Course::getOnlineTime,new Date()).in(Course::getId,ids));
+
+        //3.发布课程数据到es索引库,为了前端课程站点能够展示并搜索到课程数据.向ES中存数据，到底存什么哪些属性？
+        // es中的文档对象  (课程名，课程分类，讲师，免费收费，现价，原价,时间，forUser，等级，销量数，评论数，浏览量，上架时间)
+        List<CourseDoc> courseDocList =courseService.listCourseDoc(ids);
+        searchServiceAPI.publishCourse2Es(courseDocList);
+
+        //4.发送推广信息(站内信，短信，邮箱)。异步发送（mq（微服务），spring异步任务（单体项目））
+        courseService.sendPuslishMessage(courseDocList);
+
+        return JSONResult.success();
+    }
+
+    @GetMapping("/treeData")
     public JSONResult treeData(){
         List<CourseType> tree=courseTypeService.buildTreeData();
         return JSONResult.success(tree);
@@ -120,7 +161,7 @@ public class CourseController {
      */
     @RequestMapping(value="/batch/{ids}",method=RequestMethod.DELETE)
     public JSONResult batchDelete(@PathVariable("ids") String ids){
-        if(!StringUtils.hasText(ids)){
+        if(!org.springframework.util.StringUtils.hasText(ids)){
             return JSONResult.error("删除ID不能为空");
         }
         try {
