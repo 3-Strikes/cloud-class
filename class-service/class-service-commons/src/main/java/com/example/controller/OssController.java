@@ -2,6 +2,7 @@ package com.example.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.example.result.JSONResult;
 import com.example.util.OssUtil;
 import org.springframework.web.bind.annotation.*;
@@ -26,25 +27,25 @@ public class OssController {
         return JSONResult.success(url);//返回什么信息？http地址
     }
 
-    // 新增：OSS文件删除接口
+    /**
+     * 文件删除接口（RESTful风格推荐使用DELETE请求）
+     * @param objectName OSS中存储的文件对象名（如：2025/12/11/xxxx.jpg）
+     * @return JSONResult 删除结果
+     */
     @DeleteMapping("deleteFile")
-    public JSONResult deleteFile(@RequestParam String fileUrl) {
-        try {
-            // 1. 从URL中解析出OSS的objectName（调用OssUtil的工具方法）
-            String objectName = OssUtil.subObjectName(fileUrl);
-            if (objectName == null || objectName.isEmpty()) {
-                return JSONResult.error("文件URL格式错误，无法解析");
-            }
+    public JSONResult deleteFile(@RequestParam("objectName") String objectName) {
+        // 校验对象名是否为空
+        if (StrUtil.isBlank(objectName)) {
+            return JSONResult.error("文件对象名不能为空");
+        }
 
-            // 2. 调用OssUtil删除文件
+        try {
+            // 调用OSS工具类删除文件
             OssUtil.del(objectName);
             return JSONResult.success("文件删除成功");
         } catch (Exception e) {
-            e.printStackTrace();
-            // 非强制失败（文件删除失败不影响课程删除）
-            return JSONResult.error("文件删除失败：" + e.getMessage());
+            // 捕获OSS操作异常，返回友好提示
+            return JSONResult.error("文件删除异常：" + e.getMessage());
         }
     }
-
-
 }

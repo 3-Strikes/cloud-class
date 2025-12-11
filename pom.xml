@@ -27,6 +27,7 @@
         <module>class-pojo/class-pojo-course</module>
         <module>class-pojo/class-pojo-course</module>
         <module>class-service/class-service-systemdictionary</module>
+        <module>class-pojo/class-pojo-commons</module>
     </modules>
 
     <properties>
@@ -115,6 +116,23 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mp.version}</version>
+            </dependency>
+            
+            <!-- 添加 Feign 相关依赖管理 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>12.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

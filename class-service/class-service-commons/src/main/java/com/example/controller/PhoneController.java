@@ -1,7 +1,7 @@
 package com.example.controller;
 
-import com.example.cache.CacheKeys;
 import com.example.cache.CacheService;
+import com.example.constant.CacheKeys;
 import com.example.result.JSONResult;
 import com.example.util.AssertUtil;
 import com.example.util.StrUtils;

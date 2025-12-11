@@ -7,17 +7,10 @@
         <groupId>com.example</groupId>
         <artifactId>cloud-class</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>class-api</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>class-api-system</module>
-        <module>class-api-uaa</module>
-        <module>class-api-media</module>
-        <module>class-api-search</module>
-        <module>class-api-user</module>
-    </modules>
+    <artifactId>class-pojo-commons</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,4 +18,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>class-basic-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>
