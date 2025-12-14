@@ -17,6 +17,7 @@
         <module>class-api-media</module>
         <module>class-api-search</module>
         <module>class-api-user</module>
+        <module>class-api-course</module>
     </modules>
 
     <properties>
@@ -24,5 +25,32 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
+    <!-- 添加Feign相关依赖，供子模块继承 -->
+    <dependencies>
+        <!-- 引入Feign核心依赖 -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+        </dependency>
+        
+        <!-- 引入Spring Cloud OpenFeign starter -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        
+        <!-- 引入负载均衡器 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        
+        <!-- 引入Feign SLF4J日志支持 -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-slf4j</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

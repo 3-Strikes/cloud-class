@@ -48,4 +48,11 @@ public class OssController {
             return JSONResult.error("文件删除异常：" + e.getMessage());
         }
     }
+
+    @DeleteMapping("delete")
+    public JSONResult delete(String url){
+        String objectName = OssUtil.subObjectName(url);
+        OssUtil.del(objectName);
+        return JSONResult.success("删除成功");
+    }
 }

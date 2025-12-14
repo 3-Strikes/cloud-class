@@ -1,0 +1,52 @@
+server:
+  port: 10090
+spring:
+  application:
+    name: service-order
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+      discovery:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+
+  config:
+    import:
+      - nacos:${spring.application.name}.yml
+
+#spring:
+#  cloud:
+#    openfeign:
+#      client:
+#        config:
+#          default:
+#            logger-level:  full
+#            connect-timeout: 3000 # 连接超时 3 秒
+#            read-timeout: 5000 # 读取超时 5 秒
+#  data:
+#    redis:
+#      host: 127.0.0.1
+#      port: 6379
+#      password: root
+#      jedis:
+#        pool:
+#          min-idle: 2
+#          max-idle: 10
+#
+#spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/ymcc-system?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+#    username: root
+#    password: root
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      initial-size: 2
+#
+#mybatis-plus:
+#  mapper-locations: classpath:com/zz/mapper/*Mapper.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -121,79 +121,81 @@ public class CourseController {
         return JSONResult.success(new PageList<Course>(page.getTotal(),page.getRecords()));
     }
 
-    /**
-     * 删除课程（同步删除OSS文件）
-     */
-    @RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-    public JSONResult delete(@PathVariable("id") Long id){
-        try {
-            // 1. 查询课程信息，获取关联的OSS文件URL
-            Course course = courseService.getById(id);
-            if (course != null) {
-                // 1.1 删除封面文件（直接调用OssUtil，无需HTTP调用）
-                String picUrl = course.getPic();
-                if (StringUtils.isNotBlank(picUrl)) {
-                    try {
-                        OssUtil.del(OssUtil.subObjectName(picUrl));
-                    } catch (Exception e) {
-                        // 仅打印日志，不影响课程删除
-                        System.err.println("删除课程封面失败：" + e.getMessage());
-                    }
-                }
-
-                // 1.2 如果有课件字段，同理删除
-                // String resourceUrl = course.getResourceUrl();
-                // if (StringUtils.isNotBlank(resourceUrl)) {
-                //     OssUtil.del(OssUtil.subObjectName(resourceUrl));
-                // }
-            }
-
-            // 2. 删除课程数据
-            courseService.removeById(id);
-            return JSONResult.success("课程删除成功");
-        } catch (Exception e) {
-            return JSONResult.error("课程删除失败：" + e.getMessage());
-        }
-    }
-
-    /**
-     * 批量删除课程
-     */
-    @RequestMapping(value="/batch/{ids}",method=RequestMethod.DELETE)
-    public JSONResult batchDelete(@PathVariable("ids") String ids){
-        if(!org.springframework.util.StringUtils.hasText(ids)){
-            return JSONResult.error("删除ID不能为空");
-        }
-        try {
-            List<Long> idList = Arrays.stream(ids.split(","))
-                    .map(Long::parseLong)
-                    .toList();
-
-            // 批量删除前，先删除关联的OSS文件
-            List<Course> courses = courseService.listByIds(idList);
-            for (Course course : courses) {
-                if (course != null && StringUtils.isNotBlank(course.getPic())) {
-                    try {
-                        OssUtil.del(OssUtil.subObjectName(course.getPic()));
-                    } catch (Exception e) {
-                        System.err.println("批量删除课程封面失败：" + e.getMessage());
-                    }
-                }
-            }
-
-            // 删除课程数据
-            courseService.removeByIds(idList);
-            return JSONResult.success("批量删除成功");
-        } catch (Exception e) {
-            return JSONResult.error("批量删除异常：" + e.getMessage());
-        }
-    }
-    /**
-     * 获取课程完整DTO信息（用于编辑）
-     */
     @GetMapping("/dto/{id}")
     public JSONResult getCourseDTO(@PathVariable("id") Long id){
         CourseDTO courseDTO = courseService.getCourseDTOById(id);
         return JSONResult.success(courseDTO);
     }
+
+    /**
+     * 删除课程（同步删除OSS文件）
+     */
+//    @RequestMapping(value="/{id}",method=RequestMethod.DELETE)
+//    public JSONResult delete(@PathVariable("id") Long id){
+//        try {
+//            // 1. 查询课程信息，获取关联的OSS文件URL
+//            Course course = courseService.getById(id);
+//            if (course != null) {
+//                // 1.1 删除封面文件（直接调用OssUtil，无需HTTP调用）
+//                String picUrl = course.getPic();
+//                if (StringUtils.isNotBlank(picUrl)) {
+//                    try {
+//                        OssUtil.del(OssUtil.subObjectName(picUrl));
+//                    } catch (Exception e) {
+//                        // 仅打印日志，不影响课程删除
+//                        System.err.println("删除课程封面失败：" + e.getMessage());
+//                    }
+//                }
+//
+//                // 1.2 如果有课件字段，同理删除
+//                // String resourceUrl = course.getResourceUrl();
+//                // if (StringUtils.isNotBlank(resourceUrl)) {
+//                //     OssUtil.del(OssUtil.subObjectName(resourceUrl));
+//                // }
+//            }
+//
+//            // 2. 删除课程数据
+//            courseService.removeById(id);
+//            return JSONResult.success("课程删除成功");
+//        } catch (Exception e) {
+//            return JSONResult.error("课程删除失败：" + e.getMessage());
+//        }
+//    }
+//
+//    /**
+//     * 批量删除课程
+//     */
+//    @RequestMapping(value="/batch/{ids}",method=RequestMethod.DELETE)
+//    public JSONResult batchDelete(@PathVariable("ids") String ids){
+//        if(!org.springframework.util.StringUtils.hasText(ids)){
+//            return JSONResult.error("删除ID不能为空");
+//        }
+//        try {
+//            List<Long> idList = Arrays.stream(ids.split(","))
+//                    .map(Long::parseLong)
+//                    .toList();
+//
+//            // 批量删除前，先删除关联的OSS文件
+//            List<Course> courses = courseService.listByIds(idList);
+//            for (Course course : courses) {
+//                if (course != null && StringUtils.isNotBlank(course.getPic())) {
+//                    try {
+//                        OssUtil.del(OssUtil.subObjectName(course.getPic()));
+//                    } catch (Exception e) {
+//                        System.err.println("批量删除课程封面失败：" + e.getMessage());
+//                    }
+//                }
+//            }
+//
+//            // 删除课程数据
+//            courseService.removeByIds(idList);
+//            return JSONResult.success("批量删除成功");
+//        } catch (Exception e) {
+//            return JSONResult.error("批量删除异常：" + e.getMessage());
+//        }
+//    }
+    /**
+     * 获取课程完整DTO信息（用于编辑）
+     */
+
 }

@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.domain.CourseType;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.vo.CrumbsVO;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ import java.util.List;
 public interface CourseTypeService extends IService<CourseType> {
 
     List<CourseType> buildTreeData();
+
+    List<CrumbsVO> getCrumbs(Long courseTypeId);
 }

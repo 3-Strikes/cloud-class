@@ -110,8 +110,8 @@
 					</div>
 					<!--站点 end-->
 					<font id="login-info" class="login-info SZY-USER-NOT-LOGIN">
-						<a class="login color" href="http://user.ymcc.com:6003/login.html" target="_top">请登录</a>
-						<a class="register" href="http://user.ymcc.com:6003/register.html" target="_top">免费注册</a>
+						<a class="login color" href="http://localhost:6003/login.html" target="_top">请登录</a>
+						<a class="register" href="http://localhost:6003/register.html" target="_top">免费注册</a>
 					</font>
 					<font id="login-info" class="login-info SZY-USER-ALREADY-LOGIN" style="display: none;">
 						<em>
@@ -123,13 +123,13 @@
 
 					<ul>
 						<li>
-							<a class="menu-hd home" href="http://course.ymcc.com:6002/index.html" target="_top">
+							<a class="menu-hd home" href="http://localhost:6003/index.html" target="_top">
 								<i></i> IT首页
 							</a>
 						</li>
 						<li class="menu-item">
 							<div class="menu">
-								<a class="menu-hd myinfo" href="http://user.ymcc.com:6003/user.home.html" target="_blank">
+								<a class="menu-hd myinfo" href="http://localhost:6003/user.home.html" target="_blank">
 									<i></i> 会员中心
 									<b></b>
 								</a>
@@ -722,7 +722,7 @@
 
 					<span class="crumbs-arrow">&gt;</span>
 					<div class="crumbs-nav crumbs-nav0" v-for="node in crumbs" :key="node"  >
-						<!--http://course.ymcc.com:6002/list.html?courseTypeId=1040-->
+						<!--http://course.ymcc.com:6003/list.html?courseTypeId=1040-->
 						<a class="crumbs-title" :href="listUrl + node.ownerProductType.id">
 							{{node.ownerProductType.name}}
 							<i class="icon"></i>
@@ -1269,7 +1269,7 @@
 													你好！请
 													<a href="javascript:void(0);" class="quick-login-a color ajax-login">登录</a>
 													|
-													<a href="http://user.ymcc.com:6003/register.html" class="color">注册</a>
+													<a href="http://localhost:6003/register.html" class="color">注册</a>
 												</p>
 											</div>
 											<!-- 没有登录的情况 _end -->
@@ -1644,7 +1644,7 @@
                         crumbs:[],//面包屑
 						letters:[],
 						datas:{"total:":0,rows:[]},
-						listUrl:"http://course.ymcc.com:6002/list.html?courseTypeId=",
+						listUrl:"http://localhost:6003/list.html?courseTypeId=",
 						pages:1,
 						grades:[],
 						charges:[],
@@ -1733,8 +1733,8 @@
 				,
                 mounted(){
                     //获取路径中值赋值给keyword,keyword在做一个双向绑定
-                    //http://127.0.0.1:6002/list.html?    courseTypeId,102
-					//http://127.0.0.1:6002/list.html?    keyword,java
+                    //http://127.0.0.1:6003/list.html?    courseTypeId,102
+					//http://127.0.0.1:6003/list.html?    keyword,java
                     let url = location.href;
                     url = url.substr(url.indexOf("?")+1);   //courseTypeId=102    ;  keyword=java
                     var tmps = url.split("="); //[producttype,102]   ; [keyword,java]

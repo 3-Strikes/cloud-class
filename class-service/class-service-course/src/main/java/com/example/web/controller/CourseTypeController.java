@@ -6,6 +6,7 @@ import com.example.query.CourseTypeQuery;
 import com.example.result.JSONResult;
 import com.example.result.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.vo.CrumbsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,12 @@ public class CourseTypeController {
 
     @Autowired
     public CourseTypeService courseTypeService;
+
+    @GetMapping("crumbs/{courseTypeId}")
+    public JSONResult crumbs(@PathVariable("courseTypeId") Long courseTypeId){
+        List<CrumbsVO> crumbs=courseTypeService.getCrumbs(courseTypeId);
+        return JSONResult.success(crumbs);
+    }
 
     @GetMapping("treeData")
     public JSONResult treeData(){

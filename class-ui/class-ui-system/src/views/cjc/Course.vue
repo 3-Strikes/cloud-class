@@ -350,10 +350,32 @@ export default {
     }
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log(file)
+      let files = [];
+      fileList.forEach(function (file) {
+        if (file.response && file.response.data && file.response.data) {
+          let url = file.url = file.response.data;
+          files.push(url);
+        } else if (file.url) {
+          files.push(file.url);
+        }
+      });
+      if (file.response && file.response.data) {
+        console.log("删除文件成功")
+        var filePath = file.response.data;
+        this.$http.delete("/common/oss/delete?url=" + filePath)
+            .then(res => {
+              if (res.code == 20000) {
+                this.suc("删除成功");
+              }
+            })
+      }
+    },
     // 封面文件×号点击事件：判断并删除OSS文件
     async handlePicRemove(file, fileList) {
       if (file.response && file.response.data) {
-        await this.deleteOssFile(file.response.data);
+        await this.handleRemove(file.response.data);
       }
       this.addForm.pic = "";
     },
@@ -361,26 +383,11 @@ export default {
     // 课件文件×号点击事件：判断并删除OSS文件
     async handleZipRemove(file, fileList) {
       if (file.response && file.response.data) {
-        await this.deleteOssFile(file.response.data);
+        await this.handleRemove(file.response.data);
       }
       this.addForm.zipResources = "";
     },
 
-    // 调用后端删除OSS文件的核心函数
-    async deleteOssFile(fileUrl) {
-      try {
-        const res = await this.$http.delete("/common/oss/deleteFile", {
-          params: { fileUrl: fileUrl }
-        });
-        if (res.data.success) {
-          this.$message({ message: "文件删除成功", type: "success" });
-        } else {
-          this.$message({ message: res.data.message, type: "error" });
-        }
-      } catch (error) {
-        this.$message({ message: "文件删除失败：" + error.message, type: "error" });
-      }
-    },
 
     //秒杀相关
     getKillActivitys() {

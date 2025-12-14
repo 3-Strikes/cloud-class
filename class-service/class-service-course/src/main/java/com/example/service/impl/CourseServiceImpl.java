@@ -74,8 +74,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         //保存课程营销信息
         CourseMarket courseMarket = courseDTO.getCourseMarket();
         courseMarket.setId(course.getId());
-        if(courseMarket.getPrice()==null)courseMarket.setPrice(new BigDecimal(0.0));
-        if(courseMarket.getPriceOld()==null)courseMarket.setPriceOld(new BigDecimal(0.0));
+        if(courseMarket.getPrice()==null)courseMarket.setPrice(0.0);
+        if(courseMarket.getPriceOld()==null)courseMarket.setPriceOld(0.0);
         marketService.save(courseMarket);
 
         //保存课程资源信息

@@ -23,6 +23,9 @@ spring:
     import:
       - nacos:${spring.application.name}.yml
       - nacos:share-config.yml?group=DEFAULT_GROUP
+  # 允许Bean定义覆盖，解决Feign客户端重复注册问题
+  main:
+    allow-bean-definition-overriding: true
 #  data:
 #    redis:
 #      host: 127.0.0.1

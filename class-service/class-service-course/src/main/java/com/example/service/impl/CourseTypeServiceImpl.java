@@ -1,21 +1,22 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.cache.CacheService;
 import com.example.constant.CacheKeys;
 import com.example.domain.CourseType;
 import com.example.mapper.CourseTypeMapper;
 import com.example.service.CourseTypeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.vo.CrumbsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Wrapper;
+import java.util.*;
 
 /**
  * <p>
@@ -88,5 +89,26 @@ public class CourseTypeServiceImpl extends ServiceImpl<CourseTypeMapper, CourseT
             }
         }
         return tree;
+    }
+
+    @Override
+    public List<CrumbsVO> getCrumbs(Long courseTypeId) {
+        List<CrumbsVO> result = new ArrayList<>();
+        CourseType type = getById(courseTypeId);
+        String path = type.getPath();
+        String[] typeIds = path.split("\\.");
+        List<CourseType> list = this.listByIds(Arrays.asList(typeIds));
+
+        for (CourseType courseType : list) {
+            CrumbsVO vo = new CrumbsVO();
+            vo.setOwnerProductType(courseType);
+
+            Long pid = courseType.getPid();
+            LambdaQueryWrapper<CourseType> eq = Wrappers.lambdaQuery(CourseType.class).eq(CourseType::getPid, pid).ne(CourseType::getId, courseType.getId());
+            List<CourseType> courseTypes = this.list(eq);
+            vo.setOtherProductTypes(courseTypes);
+            result.add(vo);
+        }
+        return result;
     }
 }

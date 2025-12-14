@@ -1,6 +1,19 @@
 server:
   port: 10050
 spring:
+  mail:
+    host: smtp.163.com   # 设置邮箱主机(服务商),这里使用QQ邮件服务器
+    username: fythnu@163.com  # 设置用户名
+    password: TVdJxWfVkBGNdbEJ # 设置密码，该处的密码是QQ邮箱开启SMTP的授权码而非QQ密码
+    properties:
+      mail:
+        smtp:
+          auth: true  # 必须进行授权认证，它的目的就是阻止他人任意乱发邮件
+          starttls: #SMTP加密方式:连接到一个TLS保护连接
+            enable: true
+            required: true
+  main:
+    allow-bean-definition-overriding: true  # 允许Bean定义覆盖
   application:
     name: service-common
   cloud:
@@ -16,6 +29,14 @@ spring:
     import:
       - nacos:${spring.application.name}.yml
       - nacos:share-config.yml?group=DEFAULT_GROUP
+  datasource:
+    url: jdbc:mysql://localhost:3306/ymcc-common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 2
  #单机配置
   data:
     redis:
@@ -38,22 +59,3 @@ oss:
   endpoint: oss-cn-shanghai.aliyuncs.com
   region: cn-shanghai
   bucketName: class-cloud
-#redis高可用集群的客户端连接配置
-#spring:
-#  data:
-#    redis:
-#      cluster:
-#        nodes: 127.0.0.1:6379,127.0.0.1:6380  #配置整个高可用集群半数以上的节点数。
-#      password: root
-#哨兵模式的客户端连接配置
-#spring:
-#  data:
-#    redis:
-#      sentinel:
-#        master: mymaster   #哨兵配置时，sentinel monitor mymaster 127.0.0.1 6380 1
-#        nodes: 127.0.0.1:26379  #哨兵节点ip：port
-#      password: root #主从节点的连接密码
-
-
-
-

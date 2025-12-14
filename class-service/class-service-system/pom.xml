@@ -29,6 +29,23 @@
             <artifactId>class-pojo-system</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        
+        <!-- 引入Feign核心依赖 -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+        </dependency>
+        
+        <!-- 引入Spring Cloud OpenFeign starter -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        
+        <!-- 引入负载均衡器 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
     </dependencies>
 </project>

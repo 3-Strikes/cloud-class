@@ -9,4 +9,5 @@ public interface CacheKeys {
     String VALI_CODE=APP_ID+SERVICE_ID+"valicode:";
 
     String COURSE_TYPE_TREE = APP_ID+COURSE_SERVICE_ID+"courseTypeTree";
+    String REPEAT_SUBMIT_TOKEN = APP_ID + SERVICE_ID + "repeat_submit:";
 }

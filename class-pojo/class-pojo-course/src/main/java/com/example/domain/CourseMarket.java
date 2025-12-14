@@ -30,7 +30,7 @@ public class CourseMarket implements Serializable {
      * 收费规则：，收费1免费，2收费
      */
     @TableField("charge")
-    private Byte charge;
+    private Integer charge;
 
     /**
      * 咨询qq
@@ -42,13 +42,13 @@ public class CourseMarket implements Serializable {
      * 价格
      */
     @TableField("price")
-    private BigDecimal price;
+    private Double price;
 
     /**
      * 原价
      */
     @TableField("price_old")
-    private BigDecimal priceOld;
+    private Double priceOld;
 
     @TableField("valid_days")
     private Integer validDays;
@@ -61,11 +61,11 @@ public class CourseMarket implements Serializable {
         this.id = id;
     }
 
-    public Byte getCharge() {
+    public Integer getCharge() {
         return charge;
     }
 
-    public void setCharge(Byte charge) {
+    public void setCharge(Integer charge) {
         this.charge = charge;
     }
 
@@ -77,19 +77,19 @@ public class CourseMarket implements Serializable {
         this.qq = qq;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public BigDecimal getPriceOld() {
+    public Double getPriceOld() {
         return priceOld;
     }
 
-    public void setPriceOld(BigDecimal priceOld) {
+    public void setPriceOld(Double priceOld) {
         this.priceOld = priceOld;
     }
 
@@ -104,12 +104,12 @@ public class CourseMarket implements Serializable {
     @Override
     public String toString() {
         return "CourseMarket{" +
-            "id = " + id +
-            ", charge = " + charge +
-            ", qq = " + qq +
-            ", price = " + price +
-            ", priceOld = " + priceOld +
-            ", validDays = " + validDays +
-            "}";
+                "id=" + id +
+                ", charge=" + charge +
+                ", qq='" + qq + '\'' +
+                ", price=" + price +
+                ", priceOld=" + priceOld +
+                ", validDays=" + validDays +
+                '}';
     }
 }

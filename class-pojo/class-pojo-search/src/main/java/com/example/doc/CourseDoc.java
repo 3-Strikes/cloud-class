@@ -1,5 +1,6 @@
 package com.example.doc;
 
+import com.example.constant.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -8,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Document(indexName = "course_index")
+@Document(indexName = Constants.COURSE_INDEX)
 public class CourseDoc {
     @Id
     private Long id;//课程id
@@ -38,9 +39,9 @@ public class CourseDoc {
     @Field(type = FieldType.Integer)
     private Integer charge;//收费规则：，收费1免费，2收费
     @Field(type = FieldType.Double)
-    private BigDecimal price;//现价
+    private Double price;//现价
     @Field(type = FieldType.Double)
-    private BigDecimal priceOld;//原价
+    private Double priceOld;//原价
     @Field(type = FieldType.Integer)
     private Integer saleCount;//销量
 
@@ -168,19 +169,19 @@ public class CourseDoc {
         this.charge = charge;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public BigDecimal getPriceOld() {
+    public Double getPriceOld() {
         return priceOld;
     }
 
-    public void setPriceOld(BigDecimal priceOld) {
+    public void setPriceOld(Double priceOld) {
         this.priceOld = priceOld;
     }
 

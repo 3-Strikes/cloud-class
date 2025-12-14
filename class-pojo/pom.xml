@@ -13,8 +13,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>class-pojo-media</module>
-        <module>class-pojo-systemdictionary</module>
         <module>class-pojo-search</module>
+        <module>class-pojo-order</module>
+        <module>class-pojo-pay</module>
     </modules>
 
     <properties>

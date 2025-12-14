@@ -20,14 +20,10 @@
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>class-basic-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.example</groupId>
             <artifactId>class-basic-dependency</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>class-pojo-course</artifactId>
@@ -35,45 +31,39 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>class-basic-cache</artifactId>
+            <artifactId>class-pojo-search</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.seata</groupId>
-            <artifactId>seata-all</artifactId>
-            <version>1.7.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>class-service-commons</artifactId>
+            <artifactId>class-pojo-commons</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
+        <!-- redis缓存依赖-->
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>class-basic-cache</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>class-api-media</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>class-api-search</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-spring-boot</artifactId>
-            <version>2.3.0</version>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
