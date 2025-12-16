@@ -6,6 +6,11 @@ public enum OrderStatus {
     MANUAL_CANCEL(2,"手动取消订单"),
     PAY_FAIL(3,"支付失败"),
     TIMEOUT_CANCEL(4,"超时取消"),
+
+    REFUND_SUC(5,"退款成功"),
+
+    REFUND_FAIL(6,"退款失败"),
+
     ;
     private Integer code;
     private String desc;

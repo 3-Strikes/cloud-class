@@ -24,4 +24,10 @@ public interface Constants {
     String CHECK_ORDER_STATUS_TOPIC = "check_order_status";
     String COURSE_ORDER_STATUS_TAGS = "course_order";
     String COURSE_ORDER_CHECK_GROUP = "course_order_check_group";
+
+    //支付订单完成消息------------------begin
+    String PAY_ORDER_FINISH_TOPIC = "pay-order-finish";
+    String COURSE_ORDER_FINISH_TAGS = "course-order-finish_tags";
+    String COURSE_ORDER_FINISH_GROUP = "course-order-finish_group";
+    //支付订单完成消息------------------END
 }

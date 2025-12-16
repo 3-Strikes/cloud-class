@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.domain.PayOrder;
 import com.example.dto.ApplyPayDTO;
 import com.example.enums.OrderStatus;
+import com.example.exceptions.BusinessException;
 import com.example.result.JSONResult;
 import com.example.service.AlipayService;
 import com.example.service.PayOrderService;
@@ -21,6 +22,22 @@ public class PayController {
 
     @Autowired
     private AlipayService alipayService;
+
+
+    //退款功能
+    // PayController.java 中新增退款接口
+    @PostMapping("refund/{orderNo}")
+    public JSONResult refund(@PathVariable String orderNo) {
+        try {
+            payOrderService.handleRefund(orderNo);
+            return JSONResult.success("退款成功");
+        } catch (BusinessException e) {
+            return JSONResult.error(e.getMessage());
+        } catch (Exception e) {
+            return JSONResult.error("系统异常，退款失败");
+        }
+    }
+
 
     @GetMapping("checkPayOrder/{orderNo}")
     public JSONResult checkPayOrder(@PathVariable String orderNo){

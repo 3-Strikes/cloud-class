@@ -28,6 +28,12 @@ public class CourseOrderController {
         return JSONResult.success(result);
 
     }
+
+    /**
+     * 提交订单
+     * @param courseOrderDTO
+     * @return
+     */
     @PostMapping("placeOrder")
     public JSONResult placeOrder(@Valid @RequestBody CourseOrderDTO courseOrderDTO){
         //防重复提交的token校验

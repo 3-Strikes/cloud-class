@@ -18,6 +18,7 @@
         <module>class-api-search</module>
         <module>class-api-user</module>
         <module>class-api-course</module>
+        <module>class-api-order</module>
     </modules>
 
     <properties>
