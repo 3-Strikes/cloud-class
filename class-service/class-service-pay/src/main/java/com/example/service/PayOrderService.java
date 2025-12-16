@@ -13,4 +13,5 @@ import com.example.domain.PayOrder;
  */
 public interface PayOrderService extends IService<PayOrder> {
 
+    boolean updatePayOrderStatus(String orderNo, Integer payStatus);
 }

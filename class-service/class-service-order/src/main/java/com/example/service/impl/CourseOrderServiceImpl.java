@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.CourseServiceAPI;
 import com.example.cache.CacheService;
@@ -8,6 +9,7 @@ import com.example.constant.CacheKeys;
 import com.example.constant.Constants;
 import com.example.domain.*;
 import com.example.dto.CourseOrderDTO;
+import com.example.dto.OrderInfoDTO;
 import com.example.enums.OrderStatus;
 import com.example.mapper.CourseOrderMapper;
 import com.example.result.JSONResult;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -113,10 +116,10 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
         String topic= Constants.PAY_ORDER_TOPIC+":"+Constants.COURSE_ORDER_TAGS;
         rocketMQTemplate.sendMessageInTransaction(topic, MessageBuilder.withPayload(payOrder).build(), courseOrder);
 
-        //保存主订单
-//        this.save(courseOrder);
-        //保存订单明细集合
-//        courseOrderItemService.saveBatch(items);
+        //发送延时消息，自动取消未支付订单
+        String topicTag= Constants.CHECK_ORDER_STATUS_TOPIC+":"+Constants.COURSE_ORDER_STATUS_TAGS;
+        rocketMQTemplate.syncSend(topicTag,MessageBuilder.withPayload(orderNo).build(), 3000, 3);//等级3（10s） 等级16（30m）
+
 
         return orderNo;
     }
@@ -134,5 +137,22 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
 
     }
 
+    /**
+     * 根据订单编号，查询订单的购买人id，订单关联的课程id的集合
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public OrderInfoDTO getOrderInfo(String orderNo) {
+        CourseOrder one = this.getOne(Wrappers.lambdaQuery(CourseOrder.class).eq(CourseOrder::getOrderNo, orderNo));
+        Long userId = one.getUserId();
+        List<CourseOrderItem> list = courseOrderItemService.list(Wrappers.lambdaQuery(CourseOrderItem.class).eq(CourseOrderItem::getOrderNo, orderNo));
+        List<Long> courseIds = list.stream().map(courseOrderItem -> courseOrderItem.getCourseId()).collect(Collectors.toList());
 
+        OrderInfoDTO result=new OrderInfoDTO();
+        result.setUserId(userId);
+        result.setCourseIds(courseIds);
+
+        return result;
+    }
 }

@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,7 +30,7 @@ public class PayFlow implements Serializable {
      * 交易时间
      */
     @TableField("notify_time")
-    private LocalDateTime notifyTime;
+    private Date notifyTime;
 
     /**
      * 标题
@@ -46,7 +48,7 @@ public class PayFlow implements Serializable {
      * 金额
      */
     @TableField("total_amount")
-    private Long totalAmount;
+    private BigDecimal totalAmount;
 
     @TableField("trade_status")
     private String tradeStatus;
@@ -80,11 +82,11 @@ public class PayFlow implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getNotifyTime() {
+    public Date getNotifyTime() {
         return notifyTime;
     }
 
-    public void setNotifyTime(LocalDateTime notifyTime) {
+    public void setNotifyTime(Date notifyTime) {
         this.notifyTime = notifyTime;
     }
 
@@ -104,11 +106,11 @@ public class PayFlow implements Serializable {
         this.outTradeNo = outTradeNo;
     }
 
-    public Long getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

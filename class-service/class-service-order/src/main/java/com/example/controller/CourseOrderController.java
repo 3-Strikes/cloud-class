@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.CourseOrder;
 import com.example.dto.CourseOrderDTO;
+import com.example.dto.OrderInfoDTO;
 import com.example.query.CourseOrderQuery;
 import com.example.result.JSONResult;
 import com.example.result.PageList;
@@ -20,6 +21,13 @@ public class CourseOrderController {
     public CourseOrderService courseOrderService;
 
 
+    @GetMapping("getOrderInfoByOrderNo/{orderNo}")
+    public JSONResult getOrderInfo(@PathVariable String orderNo){
+
+        OrderInfoDTO result=courseOrderService.getOrderInfo(orderNo);
+        return JSONResult.success(result);
+
+    }
     @PostMapping("placeOrder")
     public JSONResult placeOrder(@Valid @RequestBody CourseOrderDTO courseOrderDTO){
         //防重复提交的token校验

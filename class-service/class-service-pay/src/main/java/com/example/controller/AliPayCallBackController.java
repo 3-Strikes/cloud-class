@@ -1,12 +1,25 @@
-package com.example.web.controller;
+package com.example.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.example.constant.Constants;
+import com.example.domain.PayFlow;
+import com.example.domain.PayOrder;
+import com.example.enums.OrderStatus;
+import com.example.service.AlipayService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.rocketmq.client.producer.SendStatus;
+import org.apache.rocketmq.client.producer.TransactionSendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +28,12 @@ import java.util.Set;
 @RestController
 @RequestMapping("alipay")
 public class AliPayCallBackController {
+
+    @Autowired
+    private AlipayService alipayService;
+
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 1. 在进行异步通知交互时，如果支付宝收到的应答不是 success ，支付宝会认为通知失败，会通过一定的策略定期重新发起通知。通知的间隔频率为：4m、10m、10m、1h、2h、6h、15h。
@@ -45,11 +64,50 @@ public class AliPayCallBackController {
             System.out.println("签名验证失败！");
         }
 
-        //TODO 修改支付单状态状态
-        //TODO 发送事务消息，修改课程订单状态，添加用户课程购买记录
 
-        //支付完成后，阿里调用，
-        //修改订单状态，（）
-        return "success";
+        boolean isok = alipayService.rsaCheck(map);
+
+        if(isok){
+            String orderNo = map.get("out_trade_no");
+            String tradeStatus = map.get("trade_status");
+            String totalAmount = map.get("total_amount");
+            String notifyTime = map.get("notify_time");
+            String subject = map.get("subject");
+            OrderStatus orderStatus = null;
+
+            if("TRADE_SUCCESS".equals(tradeStatus)){
+                orderStatus = OrderStatus.PAY_SUC;
+            } else if ("TRADE_CLOSED".equals(tradeStatus)) {
+                orderStatus = OrderStatus.TIMEOUT_CANCEL;
+            }
+
+            PayOrder msg=new PayOrder();
+            PayOrder payOrder=new PayOrder();
+            payOrder.setOrderNo(orderNo);
+            payOrder.setPayStatus(orderStatus.getCode());
+            BeanUtils.copyProperties(payOrder,msg);
+
+            PayFlow flow=new PayFlow();
+            flow.setNotifyTime(DateUtil.parse(notifyTime,"yyyy-MM-dd HH:mm:ss"));
+            flow.setSubject(subject);
+            flow.setOutTradeNo(orderNo);
+            flow.setTotalAmount(new BigDecimal(totalAmount));
+            flow.setTradeStatus(tradeStatus);
+            payOrder.setPayFlow(flow);
+
+            //通过mq事务消息发送支付单完成消息
+            //订单服务、修改课程订单状态
+            //发送课程中心、 用户购买课程记录
+            String topicTag = Constants.PAY_ORDER_TOPIC+":"+Constants.COURSE_ORDER_STATUS_TAGS;
+            TransactionSendResult transactionSendResult = rocketMQTemplate.sendMessageInTransaction(topicTag, MessageBuilder.withPayload(msg).build(), payOrder);
+            if(transactionSendResult.getSendStatus()== SendStatus.SEND_OK){
+                return "success";
+            }else {
+                return "error";
+            }
+
+        }else {
+            return "error";
+        }
     }
 }

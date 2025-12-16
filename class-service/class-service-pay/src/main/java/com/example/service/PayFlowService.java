@@ -13,4 +13,5 @@ import com.example.domain.PayFlow;
  */
 public interface PayFlowService extends IService<PayFlow> {
 
+    boolean updatePayOrderStatus(String orderNo, Integer tradeStatus);
 }

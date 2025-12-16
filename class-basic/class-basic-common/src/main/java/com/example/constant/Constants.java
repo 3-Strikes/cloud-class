@@ -19,4 +19,9 @@ public interface Constants {
     //    支付订单消息------------------begin
     String PAY_ORDER_TOPIC="pay-order";
     String COURSE_ORDER_TAGS="course-order";//课程订单tag
+
+    //检测订单状态信息
+    String CHECK_ORDER_STATUS_TOPIC = "check_order_status";
+    String COURSE_ORDER_STATUS_TAGS = "course_order";
+    String COURSE_ORDER_CHECK_GROUP = "course_order_check_group";
 }

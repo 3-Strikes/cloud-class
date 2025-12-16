@@ -80,6 +80,17 @@ public class PayOrder implements Serializable {
     @TableField("pay_status")
     private Integer payStatus;
 
+    @TableField(exist = false)
+    private PayFlow payFlow;
+
+    public PayFlow getPayFlow() {
+        return payFlow;
+    }
+
+    public void setPayFlow(PayFlow payFlow) {
+        this.payFlow = payFlow;
+    }
+
     public Long getId() {
         return id;
     }
