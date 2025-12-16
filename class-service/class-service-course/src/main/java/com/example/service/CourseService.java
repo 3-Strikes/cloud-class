@@ -4,6 +4,8 @@ import com.example.doc.CourseDoc;
 import com.example.domain.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dto.CourseDTO;
+import com.example.vo.CourseDetailVO;
+import com.example.vo.CourseOrderVO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -31,4 +33,8 @@ public interface CourseService extends IService<Course> {
     List<CourseDoc> listCourseDoc(Set<Long> ids);
 
     void sendPuslishMessage(List<CourseDoc> courseDocList);
+
+    CourseOrderVO getCourseInfoByIds(List<Long> courseIds);
+
+    CourseDetailVO getDetailById(Long courseId);
 }

@@ -29,4 +29,9 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         List<String> names=super.baseMapper.selectNamesByIds(teacharIds);
         return names;
     }
+
+    @Override
+    public List<Teacher> listByCourseId(Long courseId) {
+        return super.baseMapper.listByCourseId(courseId);
+    }
 }

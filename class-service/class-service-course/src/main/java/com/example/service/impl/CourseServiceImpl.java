@@ -3,13 +3,17 @@ package com.example.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.api.MediaServiceAPI;
 import com.example.constant.Constants;
 import com.example.doc.CourseDoc;
 import com.example.domain.*;
 import com.example.dto.CourseDTO;
 import com.example.mapper.*;
+import com.example.result.JSONResult;
 import com.example.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.vo.CourseDetailVO;
+import com.example.vo.CourseOrderVO;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +44,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private CourseResourceService resourceService;
     @Autowired
     private CourseSummaryService summaryService;
-//    @Autowired
-//    private RocketMQTemplate mqTemplate;
+    @Autowired
+    private CourseChapterService chapterService;
 
     @Autowired
     private CourseDetailMapper courseDetailMapper;
@@ -53,6 +57,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private TeacherMapper teacherMapper;
     @Autowired
     private CourseChapterMapper courseChapterMapper;
+    
+    @Autowired
+    private RocketMQTemplate mqTemplate;
+    @Autowired
+    private MediaServiceAPI mediaServiceAPI;
     //本地事务
     @Transactional
     @Override
@@ -162,7 +171,118 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     public void sendPuslishMessage(List<CourseDoc> courseDocList) {
+        //取集合中前2个课程，得到课程名 <a href="ssss.html?courseid=xxx">
+        StringBuffer sb=new StringBuffer();
+        String contents="尊敬的会员，平台新上课程[";
+        if(courseDocList.size()>=2){
+            for(int i=0;i<2;i++){
+                CourseDoc courseDoc = courseDocList.get(i);
+                String name = courseDoc.getName();
+                sb.append(name+",");
+            }
+            contents=sb.substring(0,sb.length()-1)+"...";
+        }else{
+            for (CourseDoc courseDoc : courseDocList) {
+                String name = courseDoc.getName();
+                sb.append(name+",");
+            }
+            contents=sb.substring(0,sb.length()-1);
+        }
+        contents+="]已上架，请登录平台查看";
 
+        String topic = Constants.PUBLISH_COURSE_TOPIC;
+        MessageStation messageStation=new MessageStation();
+        messageStation.setTitle("新课程发布了");
+        messageStation.setContent(contents);
+        messageStation.setType("系统消息");
+        messageStation.setSendTime(new Date());
+        messageStation.setIsread(0);
+        mqTemplate.sendOneWay(topic+":"+Constants.STATION_TAGS,messageStation);
+
+
+        MessageSms sms=new MessageSms();
+        sms.setTitle("新课程发布了");
+        sms.setContent(contents);
+        sms.setSendTime(new Date());
+        mqTemplate.sendOneWay(topic+":"+Constants.SMS_TAGS,sms);
+
+        MessageEmail email=new MessageEmail();
+        email.setTitle("新课程发布了");
+        email.setContent(contents);
+        email.setSendTime(new Date());
+        mqTemplate.sendOneWay(topic+":"+Constants.EMAIL_TAGS,email);
+    }
+
+    @Override
+    public CourseOrderVO getCourseInfoByIds(List<Long> courseIds) {
+        //参数校验
+        if(CollectionUtil.isEmpty(courseIds)) return new CourseOrderVO(0.0,Collections.emptyList());
+        CourseOrderVO result=new CourseOrderVO();
+        List<Course> courses = this.listByIds(courseIds);
+        if(CollectionUtil.isEmpty(courses)) return new CourseOrderVO(0.0,Collections.emptyList());
+        List<CourseMarket> courseMarkets = marketService.listByIds(courseIds);
+        Double totalAmount=0.0;
+
+        List<CourseOrderVO.CourseAndMarket> courseInfos=new ArrayList<>();
+        for (Course cours : courses) {
+            CourseOrderVO.CourseAndMarket courseAndMarket=new CourseOrderVO.CourseAndMarket();
+            CourseMarket cm = courseMarkets.stream().filter(courseMarket -> courseMarket.getId().equals(cours.getId())).findFirst().get();
+
+            totalAmount+=cm.getPrice();
+            courseAndMarket.setCourse(cours);
+            courseAndMarket.setCourseMarket(cm);
+            courseInfos.add(courseAndMarket);
+        }
+
+        result.setCourseInfos(courseInfos);
+        result.setTotalAmount(totalAmount.doubleValue());
+        return result;
+    }
+
+    @Override
+    public CourseDetailVO getDetailById(Long courseId) {
+        CourseDetailVO result=new CourseDetailVO();
+        //课程基本信息
+        result.setCourse(getById(courseId));
+        //价格信息
+        result.setCourseMarket(marketService.getById(courseId));
+        //课程详情
+        result.setCourseDetail(detailService.getById(courseId));
+        //统计信息
+        result.setCourseSummary(summaryService.getById(courseId));
+        //讲师信息
+        result.setTeachers(teacherService.listByCourseId(courseId));
+        //章节信息（包含各章节视频信息）
+        result.setCourseChapters(this.generateChapters(courseId));
+        return result;
+    }
+
+    private List<CourseChapter> generateChapters(Long courseId) {
+        //查询该课程下所有章节集合
+        List<CourseChapter> list = chapterService.list(Wrappers.lambdaQuery(CourseChapter.class).eq(CourseChapter::getCourseId, courseId));
+
+        JSONResult<List<MediaFile>> listJSONResult = mediaServiceAPI.listMediaFiles(courseId);
+        List<MediaFile> mediaFiles = listJSONResult.getData();
+        //key:章节id，value：视频集合
+        Map<Long,List<MediaFile>> mediaFileMap=new HashMap<>();
+        for (MediaFile mediaFile : mediaFiles) {
+            mediaFile.setFileUrl(null);
+            Long chapterId = mediaFile.getChapterId();
+            if(mediaFileMap.containsKey(chapterId)){
+                mediaFileMap.get(chapterId).add(mediaFile);
+            }else{
+                List<MediaFile> tmp=new ArrayList<>();
+                tmp.add(mediaFile);
+                mediaFileMap.put(chapterId,tmp);
+            }
+        }
+
+        //把mediaFiles分到各章节
+        for (CourseChapter courseChapter : list) {
+            Long chapterId = courseChapter.getId();
+            courseChapter.setMediaFiles(mediaFileMap.get(chapterId));
+        }
+        return list;
     }
 
 //    @Override

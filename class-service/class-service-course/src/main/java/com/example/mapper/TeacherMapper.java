@@ -20,4 +20,6 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     List<String> selectNamesByIds(List<Long> teacharIds);
 
     List<CourseTeacher> selectList(LambdaQueryWrapper<CourseTeacher> eq);
+
+    List<Teacher> listByCourseId(Long courseId);
 }

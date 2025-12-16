@@ -16,4 +16,6 @@ import java.util.List;
 public interface TeacherService extends IService<Teacher> {
 
     List<String> selectNamesByIds(List<Long> teacharIds);
+
+    List<Teacher> listByCourseId(Long courseId);
 }

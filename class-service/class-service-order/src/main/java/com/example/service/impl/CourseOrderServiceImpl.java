@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.CourseServiceAPI;
 import com.example.cache.CacheService;
 import com.example.constant.CacheKeys;
-import com.example.domain.Course;
-import com.example.domain.CourseMarket;
-import com.example.domain.CourseOrder;
-import com.example.domain.CourseOrderItem;
+import com.example.constant.Constants;
+import com.example.domain.*;
 import com.example.dto.CourseOrderDTO;
 import com.example.enums.OrderStatus;
 import com.example.mapper.CourseOrderMapper;
@@ -16,7 +14,9 @@ import com.example.result.JSONResult;
 import com.example.service.CourseOrderItemService;
 import com.example.service.CourseOrderService;
 import com.example.vo.CourseOrderVO;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +44,9 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
     @Autowired
     private CourseServiceAPI courseServiceAPI;
 
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
+
     @Override
     public void checkRepeatSubmit(String token, String loginUserId, String courseIds) {
         String key= CacheKeys.REPEAT_SUBMIT_TOKEN+loginUserId+":"+courseIds;
@@ -55,7 +58,6 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
         cacheService.del(key);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public String placeOrder(String loginUserId,CourseOrderDTO courseOrderDTO) {
         //生成课程订单
@@ -96,19 +98,40 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
         courseOrder.setCreateTime(current);
         courseOrder.setUpdateTime(current);
         courseOrder.setOrderNo(orderNo);
-        courseOrder.setTotalAmount(new BigDecimal(totalAmount));
+        courseOrder.setTotalAmount(totalAmount);
         courseOrder.setTotalCount(1);
         courseOrder.setStatusOrder(OrderStatus.TO_PAY.getCode());
         courseOrder.setUserId(Long.valueOf(loginUserId));
         courseOrder.setTitle("购买课程["+sb.toString()+"],总金额["+totalAmount+"]元");
         courseOrder.setPayType(payType);
 
-        this.save(courseOrder);
-        courseOrderItemService.saveBatch(items);
+        //发送支付单创建消息，与订单创建保持原子性（事务消息）（RocketMQTemplate.sendTrans()  +  事务监听器（执行本地事务，检测本地事务方法））
+        //消息内容（支付单对象） ，由于支付服务订阅消息后，要创建支付单，所以消息内容中要包含支付单对象
+        PayOrder payOrder=generatePayOrder(courseOrder);
+        courseOrder.setItems(items);
 
+        String topic= Constants.PAY_ORDER_TOPIC+":"+Constants.COURSE_ORDER_TAGS;
+        rocketMQTemplate.sendMessageInTransaction(topic, MessageBuilder.withPayload(payOrder).build(), courseOrder);
 
+        //保存主订单
+//        this.save(courseOrder);
+        //保存订单明细集合
+//        courseOrderItemService.saveBatch(items);
 
         return orderNo;
+    }
+
+    private PayOrder generatePayOrder(CourseOrder courseOrder) {
+        PayOrder result=new PayOrder();
+        result.setOrderNo(courseOrder.getOrderNo());
+        result.setAmount(courseOrder.getTotalAmount());
+        result.setPayStatus(OrderStatus.TO_PAY.getCode());
+        result.setUserId(courseOrder.getUserId());
+        result.setPayType(courseOrder.getPayType());
+        result.setSubject(courseOrder.getTitle());
+        result.setRelationId(0L);//0：课程订单
+        return result;
+
     }
 
 

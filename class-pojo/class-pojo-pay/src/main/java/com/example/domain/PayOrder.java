@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,22 +30,22 @@ public class PayOrder implements Serializable {
      * 流水创建
      */
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     /**
      * 发生金额
      */
     @TableField("amount")
-    private Long amount;
+    private Double amount;
 
     /**
      * 支付方式:0余额直接，1支付宝，2微信,3银联
      */
     @TableField("pay_type")
-    private Byte payType;
+    private Integer payType;
 
     /**
      * 业务ID，可以关联订单ID,或者课程ID
@@ -76,7 +78,7 @@ public class PayOrder implements Serializable {
      * 支付状态
      */
     @TableField("pay_status")
-    private Byte payStatus;
+    private Integer payStatus;
 
     public Long getId() {
         return id;
@@ -84,38 +86,6 @@ public class PayOrder implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public Byte getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Byte payType) {
-        this.payType = payType;
     }
 
     public Long getRelationId() {
@@ -158,11 +128,43 @@ public class PayOrder implements Serializable {
         this.subject = subject;
     }
 
-    public Byte getPayStatus() {
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
+    }
+
+    public Integer getPayStatus() {
         return payStatus;
     }
 
-    public void setPayStatus(Byte payStatus) {
+    public void setPayStatus(Integer payStatus) {
         this.payStatus = payStatus;
     }
 

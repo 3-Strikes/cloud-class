@@ -96,7 +96,7 @@ public class SearchServiceImpl implements SearchService {
                 .fields("teacherNames",f->f.preTags("<span style='color:red'>").postTags("</span>")));
 
         //聚合查询
-        builder.aggregations("grade_terms",a->a.terms(t->t.field("gradeName.keyword")));
+        builder.aggregations("grade_terms",a->a.terms(t->t.field("gradeName")));
         builder.aggregations("charge_terms",a->a.terms(t->t.field("charge")));
 
         try {

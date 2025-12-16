@@ -6,10 +6,7 @@ import com.example.enums.FileStatus;
 import com.example.result.JSONResult;
 import com.example.service.MediaFileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -20,6 +17,12 @@ import java.util.stream.Collectors;
 public class MediaSearchController {
     @Autowired
     private MediaFileService mediaFileService;
+
+    @GetMapping("mediafiles/{courseId}")
+    public JSONResult listMediaFiles(@PathVariable("courseId") Long courseId){
+        List<MediaFile> list = mediaFileService.list(Wrappers.lambdaQuery(MediaFile.class).eq(MediaFile::getCourseId, courseId));
+        return JSONResult.success(list);
+    }
 
     @PostMapping("/listPushEnd")
     public JSONResult listPushEnd(@RequestBody List<Long> coursIds){

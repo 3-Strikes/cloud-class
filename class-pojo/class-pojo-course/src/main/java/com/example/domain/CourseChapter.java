@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -47,6 +48,9 @@ public class CourseChapter implements Serializable {
     @TableField("course_name")
     private String courseName;
 
+
+    @TableField(exist = false)
+    private List<MediaFile> mediaFiles;
     public Long getId() {
         return id;
     }
@@ -96,5 +100,13 @@ public class CourseChapter implements Serializable {
             ", courseId = " + courseId +
             ", courseName = " + courseName +
             "}";
+    }
+
+    public List<MediaFile> getMediaFiles() {
+        return mediaFiles;
+    }
+
+    public void setMediaFiles(List<MediaFile> mediaFiles) {
+        this.mediaFiles = mediaFiles;
     }
 }

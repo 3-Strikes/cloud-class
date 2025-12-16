@@ -15,4 +15,8 @@ public interface Constants {
 
     //es索引名称
     String COURSE_INDEX="course_index";
+
+    //    支付订单消息------------------begin
+    String PAY_ORDER_TOPIC="pay-order";
+    String COURSE_ORDER_TAGS="course-order";//课程订单tag
 }

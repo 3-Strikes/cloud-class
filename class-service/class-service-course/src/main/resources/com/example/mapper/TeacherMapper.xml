@@ -8,7 +8,12 @@
             #{id}
         </foreach>
     </select>
-<!--    <select id="selectList" resultType="com.example.domain.CourseTeacher">-->
+    <select id="listByCourseId" resultType="com.example.domain.Teacher">
+        select t.id,t.name,t.intro,t.technology,t.position,t.head_img,t.tags from t_teacher t
+        left join t_course_teacher ct on t.id = ct.teacher_id
+        where ct.course_id = #{courseId}
+    </select>
+    <!--    <select id="selectList" resultType="com.example.domain.CourseTeacher">-->
 <!--         select Distinct* from t_course_teacher-->
 <!--    </select>-->
 </mapper>

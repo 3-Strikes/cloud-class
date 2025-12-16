@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -47,7 +48,7 @@ public class CourseOrder implements Serializable {
      * 支付总的价格
      */
     @TableField("total_amount")
-    private BigDecimal totalAmount;
+    private Double totalAmount;
 
     /**
      * 秒杀数量
@@ -82,6 +83,17 @@ public class CourseOrder implements Serializable {
     @TableField("pay_type")
     private Integer payType;
 
+    @TableField(exist = false)
+    private List<CourseOrderItem> items;
+
+    public List<CourseOrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CourseOrderItem> items) {
+        this.items = items;
+    }
+
     public String getId() {
         return id;
     }
@@ -114,15 +126,13 @@ public class CourseOrder implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public BigDecimal getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
-
-
 
     public Long getUserId() {
         return userId;

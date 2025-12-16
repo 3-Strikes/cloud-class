@@ -606,7 +606,7 @@
 									orderNo:orderNo,
 									payType: _this.orderForm.payType,
 									//支付完成跳转地址
-									callUrl : "http://course.ymcc.com:6002/detail.html?courseId="+_this.orderForm.courseIds[0]
+									callUrl : "http://localhost:6002/detail.html?courseId="+_this.orderForm.courseIds[0]
 								};
 								//TODO : 根据订单号去查询一下支付单号了没有，如果没有好，再延迟3s中，再次查询一下。
 								_this.$http.get("/pay/pay/checkPayOrder/"+orderNo).then(res=>{
@@ -638,7 +638,7 @@
 						if(this.orderForm.courseIds){
 							console.log(this.orderForm.courseIds);
 							//发送请求到后台获取数据
-							this.$http.get("course/course/info/"+this.orderForm.courseIds).then(res=>{
+							this.$http.post("course/course/info",this.orderForm.courseIds).then(res=>{
 								let {success ,data,message} = res.data;
 								if(success){
 									this.courses = data.courseInfos;

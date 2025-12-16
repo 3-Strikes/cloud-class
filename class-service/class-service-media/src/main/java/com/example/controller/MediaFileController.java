@@ -19,6 +19,16 @@ public class MediaFileController {
 
     @Autowired
     public MediaFileService mediaFileService;
+
+    @GetMapping("getForUrl/{mediaId}")
+    public JSONResult getForUrl(@PathVariable("mediaId") String mediaId){
+        //判断是否登录，未登录返回试看m3u8;
+        //已登录，如果是免费，返回完整版m3u8；
+        //已登录，如果是收费，未购买，返回试看m3u8；（3分钟）
+        //已登录，如果是收费，已购买，返回完整m3u8；
+        String fileUrl = mediaFileService.getById(mediaId).getFileUrl();
+        return JSONResult.success(fileUrl);
+    }
     //===============================================================
     //文件注册，检查文件是否已经上传
     @PostMapping("/register")

@@ -14,7 +14,8 @@ import com.example.result.JSONResult;
 import com.example.result.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.service.CourseTypeService;
-import com.example.util.OssUtil;
+import com.example.vo.CourseDetailVO;
+import com.example.vo.CourseOrderVO;
 import jakarta.validation.Valid;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,20 @@ public class CourseController {
 
     @Autowired
     private SearchServiceAPI searchServiceAPI;
+
+    @PostMapping("info")
+    public JSONResult info(@RequestBody List<Long> courseIds){
+        if(courseIds.size()==0) return JSONResult.success();
+        CourseOrderVO result=courseService.getCourseInfoByIds(courseIds);
+        return JSONResult.success(result);
+    }
+
+
+    @GetMapping("detail/data/{courseId}")
+    public JSONResult detailData(@PathVariable("courseId") Long courseId){
+        CourseDetailVO detail = courseService.getDetailById(courseId);
+        return JSONResult.success(detail);
+    }
 
     @Transactional
     @PostMapping("onLineCourse")
