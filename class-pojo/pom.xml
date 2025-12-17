@@ -16,6 +16,7 @@
         <module>class-pojo-search</module>
         <module>class-pojo-order</module>
         <module>class-pojo-pay</module>
+        <module>class-pojo-kill</module>
     </modules>
 
     <properties>

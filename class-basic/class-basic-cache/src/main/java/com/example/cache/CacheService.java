@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -37,5 +38,9 @@ public class CacheService {
 
     public Long ttl(String key){
         return redisTemplate.getExpire(key);
+    }
+
+    public void hput(String key, Map map){
+        redisTemplate.opsForHash().putAll(key,map);
     }
 }
