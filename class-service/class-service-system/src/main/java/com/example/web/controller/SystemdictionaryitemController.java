@@ -1,5 +1,7 @@
 package com.example.web.controller;
 
+import com.alibaba.nacos.common.utils.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.Systemdictionaryitem;
 import com.example.query.SystemdictionaryitemQuery;
@@ -56,13 +58,16 @@ public class SystemdictionaryitemController {
     }
 
 
-    /**
-    * 带条件分页查询数据
-    */
+    // 在SystemdictionaryitemController的pagelist方法中补充条件
     @RequestMapping(value = "/pagelist",method = RequestMethod.POST)
     public JSONResult page(@RequestBody SystemdictionaryitemQuery query){
-        Page<Systemdictionaryitem> page = new Page<Systemdictionaryitem>(query.getPage(),query.getRows());
-        page = systemdictionaryitemService.page(page);
-        return JSONResult.success(new PageList<Systemdictionaryitem>(page.getTotal(),page.getRecords()));
+        Page<Systemdictionaryitem> page = new Page<>(query.getPage(),query.getRows());
+        // 补充name模糊查询条件
+        LambdaQueryWrapper<Systemdictionaryitem> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(query.getName())) {
+            wrapper.like(Systemdictionaryitem::getName, query.getName());
+        }
+        page = systemdictionaryitemService.page(page, wrapper); // 带条件分页
+        return JSONResult.success(new PageList<>(page.getTotal(),page.getRecords()));
     }
 }

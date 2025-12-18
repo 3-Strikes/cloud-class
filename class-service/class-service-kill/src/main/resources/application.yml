@@ -9,9 +9,9 @@ spring:
       username: nacos
       password: nacos
       config:
-        namespace: 1a062e5f-6c73-48e1-b2d7-48abd538b9b9
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
       discovery:
-        namespace: 1a062e5f-6c73-48e1-b2d7-48abd538b9b9
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
     sentinel:
       datasource:
         flow:
@@ -21,7 +21,7 @@ spring:
             password: nacos
             data-id: kill-service-flow-rule
             group-id: DEFAULT_GROUP
-            namespace: 1a062e5f-6c73-48e1-b2d7-48abd538b9b9
+            namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
             rule-type: flow #这个是固定写法
       transport:
         dashboard: 127.0.0.1:8080

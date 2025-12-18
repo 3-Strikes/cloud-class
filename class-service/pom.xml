@@ -22,6 +22,7 @@
         <module>class-service-pay</module>
         <module>class-service-order</module>
         <module>class-service-kill</module>
+
     </modules>
 
     <properties>
