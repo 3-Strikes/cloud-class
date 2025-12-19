@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -13,8 +15,21 @@ public class CacheService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public void set(String key,Object value){
-        redisTemplate.opsForValue().set(key,value);
+    public Set keys(String pattern){
+        Set keys = redisTemplate.keys(pattern);
+        return keys;
+    }
+    public List hvalues(String key){
+        return redisTemplate.opsForHash().values(key);
+    }
+
+    public void hkeys(String key){
+        redisTemplate.opsForHash().keys(key);
+    }
+
+    public Object hget(String key,String field){
+        return  redisTemplate.opsForHash().get(key, field);
+
     }
 
     public void setex(String key,Object value,Long hours){
@@ -42,5 +57,9 @@ public class CacheService {
 
     public void hput(String key, Map map){
         redisTemplate.opsForHash().putAll(key,map);
+    }
+
+    public void set(String key,Object value){
+        redisTemplate.opsForValue().set(key,value);
     }
 }

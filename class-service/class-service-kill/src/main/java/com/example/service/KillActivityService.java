@@ -3,6 +3,8 @@ package com.example.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.KillActivity;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类

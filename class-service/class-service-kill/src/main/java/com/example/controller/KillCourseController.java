@@ -9,10 +9,13 @@ import com.example.result.JSONResult;
 import com.example.result.PageList;
 import com.example.service.KillActivityService;
 import com.example.service.KillCourseService;
+import com.example.vo.CourseDetailVO;
+import com.example.vo.KillCourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/killCourse")
@@ -23,6 +26,25 @@ public class KillCourseController {
 
     @Autowired
     private KillActivityService killActivityService;
+
+    @GetMapping("online/one/{killId}/{actId}")
+    public JSONResult onlineKillCourse(@PathVariable String killId,@PathVariable String actId){
+        KillCourseVO killCoursevo = killCourseService.getOnlineKillCourse(killId,actId);
+        return JSONResult.success(killCoursevo);
+    }
+
+    @GetMapping("course/detail/{actId}/{courseId}")
+    public JSONResult killCourseDetail(@PathVariable String actId,@PathVariable String courseId){
+        CourseDetailVO detail= killCourseService.getCourseDetailFromCache(actId,courseId);
+        return JSONResult.success(detail);
+    }
+
+
+    @GetMapping("online/all")
+    public JSONResult killCourseList(){
+        List<KillCourse> list= killCourseService.listAllOnlineKillCourse();
+        return JSONResult.success(list);//对象转json字符串，底层是调用get方法获取每个属性值，作为json的值{“”：“”，}
+    }
 
     /**
     * 保存和修改公用的

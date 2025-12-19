@@ -30,4 +30,7 @@ public interface Constants {
     String COURSE_ORDER_FINISH_TAGS = "course-order-finish_tags";
     String COURSE_ORDER_FINISH_GROUP = "course-order-finish_group";
     //支付订单完成消息------------------END
+
+    //检测秒杀临时订单确认状态----------begin
+    String CHECK_CACHE_ORDER_CONFIRM_STATUS = "check_cache_order_confirm_status";
 }

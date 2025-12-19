@@ -12,4 +12,9 @@ public interface CacheKeys {
     String REPEAT_SUBMIT_TOKEN = APP_ID + SERVICE_ID + "repeat_submit:";
 
     String KILL_ACTIVITY = APP_ID+KILL_SERVICE_ID+"activity:";
+
+    //
+    String KILL_ACTIVITY_COURSE_DETAIL =  APP_ID+KILL_SERVICE_ID+"detail:";//ymcc:kill:detail:
+    String KILL_ACTIVITY_COURSE_COUNT = APP_ID+KILL_SERVICE_ID + "coursecount:";//ymcc:kill:coursecount:1:12
+    Object KILL_ORDER = APP_ID+KILL_SERVICE_ID+"orders:";//ymcc:kill:activity:orders:123123123
 }

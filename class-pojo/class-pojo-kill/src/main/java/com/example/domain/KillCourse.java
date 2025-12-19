@@ -7,11 +7,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author fyt
@@ -108,6 +109,33 @@ public class KillCourse implements Serializable {
 
     @TableField("time_str")
     private String timeStr;
+
+    @TableField(exist = false)
+    private Boolean killing=false;
+
+    @TableField(exist = false)
+    private String killStatusName;
+
+    public Boolean getKilling() {
+        Date current=new Date();
+        if(current.after(startTime)&&current.before(endTime))killing=true;
+        return killing;
+    }
+
+    public void setKilling(Boolean killing) {
+        this.killing = killing;
+    }
+
+    public String getKillStatusName() {
+        Date current=new Date();
+        if(current.before(startTime))return "未开始";
+        if(current.after(endTime))return "已结束";
+        return "秒杀中";
+    }
+
+    public void setKillStatusName(String killStatusName) {
+        this.killStatusName = killStatusName;
+    }
 
     public String getId() {
         return id;

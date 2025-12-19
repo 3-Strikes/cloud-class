@@ -8,7 +8,7 @@ public enum E {
     USER_NOT_EXISTS("50002","用户名不存在"),
     PHONE_EXISTS("50003","手机号已存在"),
     ARG_VALI_ERROR("50004","参数校验失败"),
-    ;
+    KILL_ERROR("50005","秒杀失败，稍候重试" );
     private String code;
     private String msg;
 
