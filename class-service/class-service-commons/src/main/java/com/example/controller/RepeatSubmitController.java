@@ -22,9 +22,9 @@ public class RepeatSubmitController {
     @GetMapping("{courseId}")
     public JSONResult createToken(@PathVariable String courseId) {
         //TODO 得到登录人信息
-        String loginId="100";
+//        String loginId="100";
         String token= IdUtil.fastSimpleUUID();//创建token
-        String key= CacheKeys.REPEAT_SUBMIT_TOKEN+loginId+":"+courseId;
+        String key= CacheKeys.REPEAT_SUBMIT_TOKEN+":"+courseId;
         cacheService.setex(key,token,30l, TimeUnit.MINUTES);
         return JSONResult.success(token);
     }

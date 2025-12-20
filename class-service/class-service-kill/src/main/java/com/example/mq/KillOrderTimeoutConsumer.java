@@ -1,14 +1,15 @@
 package com.example.mq;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.CourseOrderRemoteAPI;
+import com.example.KillCourseRemoteAPI;
 import com.example.cache.CacheService;
 import com.example.constant.CacheKeys;
 import com.example.constant.Constants;
 import com.example.domain.CourseOrder;
 import com.example.domain.CourseOrderItem;
 import com.example.enums.OrderStatus;
-import com.example.service.CourseOrderItemService;
-import com.example.service.CourseOrderService;
+import com.example.result.JSONResult;
 import com.example.service.KillCourseService;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
@@ -30,42 +31,42 @@ import java.util.Map;
 )
 public class KillOrderTimeoutConsumer implements RocketMQListener<Map<String, String>> { // 注意：消息类型从String改为Map，适配原Listener的消息格式
     @Autowired
-    private CourseOrderService courseOrderService;
+    private CourseOrderRemoteAPI courseOrderRemoteAPI;
+
+    @Autowired
+    private KillCourseRemoteAPI killCourseRemoteAPI;
+
     @Autowired
     private RedisTemplate redisTemplate;
+
     @Autowired
-    private CourseOrderItemService courseOrderItemService;
-    @Autowired
-    private CacheService cacheService; // 保留CacheService，复用已有方法
+    private CacheService cacheService;
 
     @Override
-    public void onMessage(Map<String, String> message) { // 接收Map类型消息，获取orderNo、actId、courseId
+    public void onMessage(Map<String, String> message) {
         String orderNo = message.get("orderNo");
         String actId = message.get("actId");
         String courseId = message.get("courseId");
 
-        // 1. 查询订单状态（复用原Listener的校验逻辑）
-        CourseOrder order = courseOrderService.getOne(
-                Wrappers.lambdaQuery(CourseOrder.class).eq(CourseOrder::getOrderNo, orderNo)
-        );
-        if (order == null || order.getStatusOrder() != OrderStatus.TO_PAY.getCode()) {
-            return; // 订单已处理，直接返回
+        // 1. 远程查询订单状态
+        JSONResult<CourseOrder> orderResult = courseOrderRemoteAPI.queryByOrderNo(orderNo);
+        if (!orderResult.isSuccess() || orderResult.getData() == null) {
+            return;
+        }
+        CourseOrder order = orderResult.getData();
+        if (order.getStatusOrder() != OrderStatus.TO_PAY.getCode()) {
+            return;
         }
 
-        // 2. 取消订单（保留状态更新逻辑）
+        // 2. 远程更新订单状态为超时取消
         order.setStatusOrder(OrderStatus.TIMEOUT_CANCEL.getCode());
         order.setUpdateTime(new Date());
-        courseOrderService.updateById(order);
+        courseOrderRemoteAPI.updateOrderStatus(order);
 
-        // 3. 恢复库存（优先使用Lua脚本保证原子性，同时兼容actId和courseId参数）
-        String stockKey = CacheKeys.KILL_ACTIVITY_COURSE_COUNT + actId + ":" + courseId;
-        String lua = "local stock_key = KEYS[1];" +
-                "redis.pcall('INCRBY', stock_key, 1);" +
-                "return 1;";
-        RedisScript<Long> script = RedisScript.of(lua, Long.class);
-        redisTemplate.execute(script, Arrays.asList(stockKey));
+        // 3. 远程调用恢复库存
+        killCourseRemoteAPI.recoverStock(actId, courseId);
 
-        // 4. 移除用户秒杀标记（补充原Listener缺失的逻辑）
+        // 4. 移除用户秒杀标记（Redis操作保留本地执行）
         String userKillKey = CacheKeys.KILL_USER_COURSE + actId + ":" + courseId;
         redisTemplate.opsForSet().remove(userKillKey, order.getUserId().toString());
     }

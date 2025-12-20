@@ -251,7 +251,7 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
         CourseOrderItem item=new CourseOrderItem();
         item.setOrderId(orderId);
         item.setOrderNo(orderNo);
-        item.setAmount(killCourse.getKillPrice());
+        item.setAmount(Double.valueOf(String.valueOf(killCourse.getKillPrice())));
         item.setCreateTime( current);
         item.setUpdateTime(current);
         item.setCourseId(courseId);
@@ -273,7 +273,7 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
         courseOrder.setCreateTime(current);
         courseOrder.setUpdateTime(current);
         courseOrder.setOrderNo(orderNo);
-        courseOrder.setTotalAmount(killCourse.getKillPrice());
+        courseOrder.setTotalAmount(Double.valueOf(String.valueOf(killCourse.getKillPrice())));
         courseOrder.setTotalCount(1);
         courseOrder.setStatusOrder(OrderStatus.TO_PAY.getCode());
         courseOrder.setUserId(Long.valueOf(loginUserId));

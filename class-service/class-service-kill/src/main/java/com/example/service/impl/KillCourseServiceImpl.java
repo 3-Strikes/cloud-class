@@ -61,7 +61,7 @@ public class KillCourseServiceImpl extends ServiceImpl<KillCourseMapper, KillCou
         Date now=new Date();
         KillCourse killCourse = (KillCourse) hget;
         KillCourseVO result =new KillCourseVO();
-        result.setKillPrice(BigDecimal.valueOf(killCourse.getKillPrice()));
+        result.setKillPrice(killCourse.getKillPrice());
         result.setKilling(killCourse.getKilling());
         result.setUnbegin(now.before(killCourse.getStartTime()));
         if(result.getKilling()){

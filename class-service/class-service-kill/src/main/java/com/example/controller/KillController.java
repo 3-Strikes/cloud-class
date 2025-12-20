@@ -53,10 +53,10 @@ public class KillController {
             String loginId = "100"; // 实际从登录上下文获取
             String userKillKey = CacheKeys.KILL_USER_COURSE + kc.getActivityId() + ":" + kc.getCourseId();
             // 检查用户是否在已秒杀集合中
-            Boolean isMember = redisTemplate.opsForSet().isMember(userKillKey, loginId);
-            if (Boolean.TRUE.equals(isMember)) {
-                return JSONResult.error("您已秒杀过该商品，请勿重复参与");
-            }
+//            Boolean isMember = redisTemplate.opsForSet().isMember(userKillKey, loginId);
+//            if (Boolean.TRUE.equals(isMember)) {
+//                return JSONResult.error("您已秒杀过该商品，请勿重复参与");
+//            }
 
             // 继续生成临时订单
             String orderNo = killService.kill(kc);

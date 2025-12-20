@@ -690,7 +690,7 @@
 						this.orderForm.type = parseInt(type);
 						this.orderNo = orderNo;
 						// 调用接口查询秒杀临时订单信息（含价格）
-						this.$http.get("/kill/order/temp/" + orderNo).then(res => {
+						this.$http.get("kill/doKill/order/temp/" + orderNo).then(res => {
 							if (res.data.success) {
 								const tempOrder = res.data.data;
 								this.courseId = tempOrder.courseId;

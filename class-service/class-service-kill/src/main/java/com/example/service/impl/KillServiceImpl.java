@@ -61,7 +61,7 @@ public class KillServiceImpl implements KillService {
         cacheOrderDTO.setCourseId(kc.getCourseId().toString());
         cacheOrderDTO.setUserId(loginId);
         // 存入秒杀价格（关键：从当前秒杀课程对象中获取）
-        cacheOrderDTO.setKillPrice(BigDecimal.valueOf(kc.getKillPrice()));
+        cacheOrderDTO.setKillPrice(kc.getKillPrice());
 
         // TODO 1.1：将用户ID加入「已秒杀集合」（与临时订单绑定）
         String userKillKey = CacheKeys.KILL_USER_COURSE + kc.getActivityId() + ":" + kc.getCourseId();

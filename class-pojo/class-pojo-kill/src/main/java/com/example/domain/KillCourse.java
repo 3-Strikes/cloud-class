@@ -40,7 +40,7 @@ public class KillCourse implements Serializable {
     private Long courseId;
 
     @TableField("kill_price")
-    private Double killPrice;
+    private BigDecimal killPrice;
 
     /**
      * 库存
@@ -164,11 +164,11 @@ public class KillCourse implements Serializable {
         this.courseId = courseId;
     }
 
-    public Double getKillPrice() {
+    public BigDecimal getKillPrice() {
         return killPrice;
     }
 
-    public void setKillPrice(Double killPrice) {
+    public void setKillPrice(BigDecimal killPrice) {
         this.killPrice = killPrice;
     }
 
