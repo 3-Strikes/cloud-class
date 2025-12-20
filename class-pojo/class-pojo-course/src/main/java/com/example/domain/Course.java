@@ -106,7 +106,8 @@ public class Course implements Serializable {
     private Integer totalMinute;
 
     @TableField("online_time")
-    private LocalDateTime onlineTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date onlineTime;
 
     /**
      * 章节数
@@ -224,11 +225,11 @@ public class Course implements Serializable {
         this.totalMinute = totalMinute;
     }
 
-    public LocalDateTime getOnlineTime() {
+    public Date getOnlineTime() {
         return onlineTime;
     }
 
-    public void setOnlineTime(LocalDateTime onlineTime) {
+    public void setOnlineTime(Date onlineTime) {
         this.onlineTime = onlineTime;
     }
 

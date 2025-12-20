@@ -15,6 +15,17 @@ public class CourseOrderDTO {
 
     private Integer type;
 
+    @NotEmpty(message = "秒杀临时订单号不能为空") // 秒杀场景必传
+    private String orderNo; // 临时订单号（秒杀阶段生成）
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
     public List<Long> getCourseIds() {
         return courseIds;
     }

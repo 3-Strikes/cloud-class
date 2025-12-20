@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,6 +42,16 @@ public class CourseController {
     @Autowired
     private SearchServiceAPI searchServiceAPI;
 
+    @PostMapping("courseDetail")
+    public JSONResult courseDetailData(@RequestBody List<Long> courseIds){
+        List<CourseDetailVO> result=new ArrayList<>();
+        for (Long courseId : courseIds) {
+            CourseDetailVO detail = courseService.getDetailById(courseId);
+            result.add(detail);
+        }
+
+        return JSONResult.success(result);
+    }
     @PostMapping("info")
     public JSONResult info(@RequestBody List<Long> courseIds){
         if(courseIds.size()==0) return JSONResult.success();

@@ -12,6 +12,7 @@ import com.example.vo.KillCourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +61,7 @@ public class KillCourseServiceImpl extends ServiceImpl<KillCourseMapper, KillCou
         Date now=new Date();
         KillCourse killCourse = (KillCourse) hget;
         KillCourseVO result =new KillCourseVO();
-        result.setKillPrice(killCourse.getKillPrice());
+        result.setKillPrice(BigDecimal.valueOf(killCourse.getKillPrice()));
         result.setKilling(killCourse.getKilling());
         result.setUnbegin(now.before(killCourse.getStartTime()));
         if(result.getKilling()){

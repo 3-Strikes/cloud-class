@@ -1,9 +1,21 @@
 package com.example.dto;
 
+import java.math.BigDecimal;
+
 public class CacheOrderDTO {
     private String actId;
     private String courseId;
     private String userId;
+
+    private BigDecimal killPrice;
+
+    public BigDecimal getKillPrice() {
+        return killPrice;
+    }
+
+    public void setKillPrice(BigDecimal killPrice) {
+        this.killPrice = killPrice;
+    }
 
     public String getActId() {
         return actId;

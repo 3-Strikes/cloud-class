@@ -15,7 +15,9 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class KillServiceImpl implements KillService {
@@ -42,17 +44,43 @@ public class KillServiceImpl implements KillService {
         Long lastStockCount = (Long) redisTemplate.execute(objectRedisScript, Arrays.asList(key), 1);
         if(lastStockCount<0) throw new KillException(E.KILL_ERROR);
 
-        String loginId="100";
-        //秒杀成功,生成临时订单号
+//        String loginId="100";
+//        //秒杀成功,生成临时订单号
+//        String orderNo = IdUtil.getSnowflakeNextIdStr();
+//        CacheOrderDTO cacheOrderDTO=new CacheOrderDTO();
+//        cacheOrderDTO.setActId(kc.getActivityId().toString());
+//        cacheOrderDTO.setCourseId(kc.getCourseId().toString());
+//        cacheOrderDTO.setUserId(loginId);
+//        redisTemplate.opsForValue().set(CacheKeys.KILL_ORDER+orderNo,cacheOrderDTO);//courseId,actId,userId
+        String loginId = "100"; // 实际应从登录上下文获取
         String orderNo = IdUtil.getSnowflakeNextIdStr();
-        CacheOrderDTO cacheOrderDTO=new CacheOrderDTO();
+
+        // 扩展临时订单DTO，新增秒杀价格字段
+        CacheOrderDTO cacheOrderDTO = new CacheOrderDTO();
         cacheOrderDTO.setActId(kc.getActivityId().toString());
         cacheOrderDTO.setCourseId(kc.getCourseId().toString());
         cacheOrderDTO.setUserId(loginId);
-        redisTemplate.opsForValue().set(CacheKeys.KILL_ORDER+orderNo,cacheOrderDTO);//courseId,actId,userId
+        // 存入秒杀价格（关键：从当前秒杀课程对象中获取）
+        cacheOrderDTO.setKillPrice(BigDecimal.valueOf(kc.getKillPrice()));
 
-        //发送mq延时消息，检测订单的确认状态
-        rocketMQTemplate.syncSend(Constants.CHECK_CACHE_ORDER_CONFIRM_STATUS, MessageBuilder.withPayload(orderNo).build(),3000,5);
+        // TODO 1.1：将用户ID加入「已秒杀集合」（与临时订单绑定）
+        String userKillKey = CacheKeys.KILL_USER_COURSE + kc.getActivityId() + ":" + kc.getCourseId();
+        redisTemplate.opsForSet().add(userKillKey, loginId);
+        // 设置与临时订单相同的过期时间（如30分钟），避免无效缓存
+        redisTemplate.expire(userKillKey, 30, TimeUnit.MINUTES);
+
+        redisTemplate.opsForValue().set(
+                CacheKeys.KILL_ORDER + orderNo,
+                cacheOrderDTO,
+                30, TimeUnit.MINUTES
+        );
+
+        // 发送延时消息检测订单确认状态（原逻辑保留）
+        rocketMQTemplate.syncSend(
+                Constants.CHECK_CACHE_ORDER_CONFIRM_STATUS,
+                MessageBuilder.withPayload(orderNo).build(),
+                3000, 5 // 5级延时（约1分钟）
+        );
 
         return orderNo;
     }

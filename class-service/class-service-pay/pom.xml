@@ -18,6 +18,17 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>class-basic-cache</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- Redisson Spring Boot 整合依赖 -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.23.0</version> <!-- 推荐使用稳定版，适配Spring Boot版本 -->
+        </dependency>
         <!--        orm对象关系映射框架：mybatis-plus  -->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -51,6 +62,12 @@
             <groupId>com.example</groupId>
             <artifactId>class-basic-dependency</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>class-api-order</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

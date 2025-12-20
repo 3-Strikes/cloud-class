@@ -3,6 +3,7 @@ package com.example.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.CourseOrder;
 import com.example.dto.CourseOrderDTO;
+import com.example.dto.KillOrderDTO;
 import com.example.dto.OrderInfoDTO;
 
 /**
@@ -20,4 +21,6 @@ public interface CourseOrderService extends IService<CourseOrder> {
     void checkRepeatSubmit(String token, String loginUserId, String courseIds);
 
     OrderInfoDTO getOrderInfo(String orderNo);
+
+    String killPlaceOrder(String loginUserId, KillOrderDTO killOrderDTO);
 }

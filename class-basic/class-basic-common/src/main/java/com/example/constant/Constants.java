@@ -33,4 +33,9 @@ public interface Constants {
 
     //检测秒杀临时订单确认状态----------begin
     String CHECK_CACHE_ORDER_CONFIRM_STATUS = "check_cache_order_confirm_status";
+    // 新增秒杀订单标签
+    public static final String KILL_ORDER_TAGS = "kill_order_tags";
+    public static final String KILL_ORDER_STATUS_TAGS = "kill_order_status_tags";
+
+    public static final String KILL_PAY_SUCCESS_TOPIC = "kill_pay_success_topic";
 }

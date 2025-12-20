@@ -651,7 +651,7 @@
 								$.alert("订单数据加载失败["+error.message+"]");
 							})
 						}
-					}
+					},
 
 				},
 				mounted(){
@@ -664,6 +664,7 @@
 						return;
 					}
 					this.orderForm.token = token;
+
 
 					//处理课程ID======================================================
 					let courseId = api.getQueryVariable("courseId");
@@ -688,6 +689,15 @@
 					if(type && orderNo){
 						this.orderForm.type = parseInt(type);
 						this.orderNo = orderNo;
+						// 调用接口查询秒杀临时订单信息（含价格）
+						this.$http.get("/kill/order/temp/" + orderNo).then(res => {
+							if (res.data.success) {
+								const tempOrder = res.data.data;
+								this.courseId = tempOrder.courseId;
+								this.seckillPrice = tempOrder.killPrice; // 展示秒杀价格
+								this.orderNo = orderNo;
+							}
+						});
 					}
 
 					//加载初始化数据======================================================

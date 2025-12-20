@@ -124,8 +124,10 @@ export default {
         let {success , data, message ,code} = result.data;
         if(success){
           this.$message({ message: "秒杀活动发布成功" });
+          this.getTableData();
         }else{
           this.$message({ message: "发布失败"});
+
         }
         this.listLoading = false;
       }).catch(error => {

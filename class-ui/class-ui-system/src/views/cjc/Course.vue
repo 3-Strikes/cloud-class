@@ -19,7 +19,15 @@
           <el-button type="danger" @click="offLineCourse" size="small" icon="el-icon-download">课程下架</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="killCourseModelView" size="small" icon="el-icon-sell">加入秒杀</el-button>
+          <el-button
+              type="primary"
+              @click="killCourseModelView"
+              size="small"
+              icon="el-icon-sell"
+              :disabled="!row || (Array.isArray(row) && row.length !== 1) || (!Array.isArray(row) && !row.id)"
+          >
+            加入秒杀
+          </el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -404,20 +412,39 @@ export default {
     },
 
     killCourseModelView() {
-      if (!this.row || this.row === "") {
-        this.$message({message: '老铁，请选择数据', type: 'error'});
+      // 严格校验选中状态：必须选中且只能选中一个课程
+      if (!this.row) {
+        this.$message({message: '请选择一个课程', type: 'error'});
         return;
       }
+
+      // 处理单选和批量选择的情况
+      let selectedCourse;
+      if (Array.isArray(this.row)) {
+        if (this.row.length !== 1) {
+          this.$message({message: '只能选择一个课程加入秒杀', type: 'error'});
+          return;
+        }
+        selectedCourse = this.row[0];
+      } else {
+        selectedCourse = this.row;
+      }
+
+      // 校验课程是否存在有效ID
+      if (!selectedCourse.id) {
+        this.$message({message: '选中的课程数据无效', type: 'error'});
+        return;
+      }
+
+      // 正确赋值课程信息到弹窗表单
       this.killCourseForm = {
         ...this.killCourseForm,
         killCount: "",
         killPrice: "",
-        startTime: "",
-        endTime: "",
-        courseId: this.row.id,
-        courseName: this.row.name,
-        coursePic: this.row.pic,
-        teacherNames: this.row.teacherNames
+        courseId: selectedCourse.id,
+        courseName: selectedCourse.name || '未知课程', // 确保名称有默认值
+        coursePic: selectedCourse.pic || '',
+        teacherNames: selectedCourse.teacherNames || ''
       };
       this.killCourseFormVisible = true;
     },
@@ -431,6 +458,7 @@ export default {
             type: 'success'
           });
           this.killCourseFormVisible = false;
+
         } else {
           this.$message({message: ajaxResult.message, type: 'error'});
         }

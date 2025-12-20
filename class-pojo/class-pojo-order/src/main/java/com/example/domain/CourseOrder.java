@@ -86,6 +86,27 @@ public class CourseOrder implements Serializable {
     @TableField(exist = false)
     private List<CourseOrderItem> items;
 
+    @TableField(exist = false)
+    private Integer isKill; // 是否为秒杀订单：1-是，0-否
+    @TableField(exist = false)
+    private Long actId; // 秒杀活动ID（关联秒杀活动表）
+
+    public Integer getIsKill() {
+        return isKill;
+    }
+
+    public void setIsKill(Integer isKill) {
+        this.isKill = isKill;
+    }
+
+    public Long getActId() {
+        return actId;
+    }
+
+    public void setActId(Long actId) {
+        this.actId = actId;
+    }
+
     public List<CourseOrderItem> getItems() {
         return items;
     }

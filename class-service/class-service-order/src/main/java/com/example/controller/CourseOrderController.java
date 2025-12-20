@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.CourseOrder;
 import com.example.dto.CourseOrderDTO;
+import com.example.dto.KillOrderDTO;
 import com.example.dto.OrderInfoDTO;
 import com.example.query.CourseOrderQuery;
 import com.example.result.JSONResult;
@@ -21,6 +22,20 @@ public class CourseOrderController {
     public CourseOrderService courseOrderService;
 
 
+    /**
+     * 提交秒杀订单
+     * @return
+     */
+    @PostMapping("killPlaceOrder")
+    public JSONResult killPlaceOrder(@Valid @RequestBody KillOrderDTO killOrderDTO){
+        //防重复提交的token校验
+        String loginUserId="100";
+        courseOrderService.checkRepeatSubmit(killOrderDTO.getToken(), loginUserId,killOrderDTO.getCourseId());
+
+        //生成课程订单
+        String orderNo=courseOrderService.killPlaceOrder(loginUserId,killOrderDTO);
+        return JSONResult.success(orderNo);
+    }
     @GetMapping("getOrderInfoByOrderNo/{orderNo}")
     public JSONResult getOrderInfo(@PathVariable String orderNo){
 

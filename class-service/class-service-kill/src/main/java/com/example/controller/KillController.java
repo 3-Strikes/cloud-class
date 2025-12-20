@@ -1,7 +1,9 @@
 package com.example.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.example.constant.CacheKeys;
 import com.example.domain.KillCourse;
+import com.example.dto.CacheOrderDTO;
 import com.example.enums.E;
 import com.example.result.JSONResult;
 import com.example.service.KillService;
@@ -16,7 +18,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/doKill")
 public class KillController {
 
 //    @Autowired
@@ -27,22 +29,42 @@ public class KillController {
 
     @Autowired
     private KillService killService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @GetMapping("/order/temp/{orderNo}")
+    public JSONResult getTempOrder(@PathVariable String orderNo) {
+        String key = CacheKeys.KILL_ORDER + orderNo;
+        CacheOrderDTO tempOrder = (CacheOrderDTO) redisTemplate.opsForValue().get(key);
+        if (tempOrder == null) {
+            return JSONResult.error("秒杀订单不存在或已过期");
+        }
+        return JSONResult.success(tempOrder);
+    }
     @PostMapping("killcourse")
     public JSONResult killCourse(@RequestBody KillCourse kc){
         RSemaphore killSem = redissonClient.getSemaphore("killSem");
         boolean isok = false;
+        try {
+            isok = killSem.tryAcquire();
+            if (!isok) return JSONResult.error(E.KILL_ERROR);
 
-        try{
-            isok = killSem.tryAcquire();//获取许可
-            if(!isok)return JSONResult.error(E.KILL_ERROR);
-            //获取到许可
-            //TODO 检测是否已秒过商品，1人只能秒一个商品。
-            String orderNo= killService.kill(kc);
+            // TODO 1：检测用户是否已秒杀过该商品（1人1单）
+            String loginId = "100"; // 实际从登录上下文获取
+            String userKillKey = CacheKeys.KILL_USER_COURSE + kc.getActivityId() + ":" + kc.getCourseId();
+            // 检查用户是否在已秒杀集合中
+            Boolean isMember = redisTemplate.opsForSet().isMember(userKillKey, loginId);
+            if (Boolean.TRUE.equals(isMember)) {
+                return JSONResult.error("您已秒杀过该商品，请勿重复参与");
+            }
+
+            // 继续生成临时订单
+            String orderNo = killService.kill(kc);
             return JSONResult.success(orderNo);
-        }catch (Exception e){
+        } catch (Exception e) {
             return JSONResult.error(E.KILL_ERROR);
-        }finally {
-            if(isok){
+        } finally {
+            if (isok) {
                 killSem.release();
             }
         }
