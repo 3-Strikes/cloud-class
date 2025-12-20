@@ -30,6 +30,21 @@ public class KillServiceImpl implements KillService {
 
     @Override
     public String kill(KillCourse kc) {
+        // 1. 从Redis获取完整的KillCourse对象（包含killPrice）
+        // 缓存键：活动发布时存入的hash键（CacheKeys.KILL_ACTIVITY + 活动ID）
+        String killActivityKey = CacheKeys.KILL_ACTIVITY + kc.getActivityId();
+        // 从hash中获取该课程的完整信息（field为courseId）
+        KillCourse cacheKillCourse = (KillCourse) redisTemplate.opsForHash().get(
+                killActivityKey,
+                kc.getCourseId().toString() // field是课程ID的字符串形式
+        );
+
+//        // 校验缓存中的秒杀课程是否存在
+//        if (cacheKillCourse == null) {
+//            throw new KillException(E.KILL_COURSE_NOT_EXIST); // 需新增该枚举值
+//        }
+
+        // 2. 库存扣减（使用缓存中的完整对象，确保后续逻辑正确）
         String lua = "local seckill_num = tonumber(ARGV[1]);" +
                 "local stock_key = KEYS[1];" +
                 "local current_stock = redis.pcall('GET', stock_key) or 0;" +
@@ -39,34 +54,27 @@ public class KillServiceImpl implements KillService {
                 "return remain_stock;";
 
         RedisScript<Long> objectRedisScript = RedisScript.of(lua, Long.class);
+        // 库存键：使用缓存中的活动ID和课程ID（与发布时一致）
+        String stockKey = CacheKeys.KILL_ACTIVITY_COURSE_COUNT +
+                cacheKillCourse.getActivityId() + ":" +
+                cacheKillCourse.getCourseId();
+        Long lastStockCount = (Long) redisTemplate.execute(objectRedisScript, Arrays.asList(stockKey), 1);
+        if (lastStockCount < 0) {
+            throw new KillException(E.KILL_ERROR);
+        }
 
-        String key= CacheKeys.KILL_ACTIVITY_COURSE_COUNT+kc.getActivityId()+":"+kc.getCourseId();
-        Long lastStockCount = (Long) redisTemplate.execute(objectRedisScript, Arrays.asList(key), 1);
-        if(lastStockCount<0) throw new KillException(E.KILL_ERROR);
-
-//        String loginId="100";
-//        //秒杀成功,生成临时订单号
-//        String orderNo = IdUtil.getSnowflakeNextIdStr();
-//        CacheOrderDTO cacheOrderDTO=new CacheOrderDTO();
-//        cacheOrderDTO.setActId(kc.getActivityId().toString());
-//        cacheOrderDTO.setCourseId(kc.getCourseId().toString());
-//        cacheOrderDTO.setUserId(loginId);
-//        redisTemplate.opsForValue().set(CacheKeys.KILL_ORDER+orderNo,cacheOrderDTO);//courseId,actId,userId
-        String loginId = "100"; // 实际应从登录上下文获取
+        // 3. 生成临时订单（使用缓存中的killPrice）
+        String loginId = "100"; // 实际从登录上下文获取
         String orderNo = IdUtil.getSnowflakeNextIdStr();
-
-        // 扩展临时订单DTO，新增秒杀价格字段
         CacheOrderDTO cacheOrderDTO = new CacheOrderDTO();
-        cacheOrderDTO.setActId(kc.getActivityId().toString());
-        cacheOrderDTO.setCourseId(kc.getCourseId().toString());
+        cacheOrderDTO.setActId(cacheKillCourse.getActivityId().toString());
+        cacheOrderDTO.setCourseId(cacheKillCourse.getCourseId().toString());
         cacheOrderDTO.setUserId(loginId);
-        // 存入秒杀价格（关键：从当前秒杀课程对象中获取）
-        cacheOrderDTO.setKillPrice(kc.getKillPrice());
+        cacheOrderDTO.setKillPrice(cacheKillCourse.getKillPrice()); // 从缓存对象中获取价格
 
-        // TODO 1.1：将用户ID加入「已秒杀集合」（与临时订单绑定）
-        String userKillKey = CacheKeys.KILL_USER_COURSE + kc.getActivityId() + ":" + kc.getCourseId();
+        // 4. 缓存临时订单和用户秒杀记录（原逻辑保留）
+        String userKillKey = CacheKeys.KILL_USER_COURSE + cacheKillCourse.getActivityId() + ":" + cacheKillCourse.getCourseId();
         redisTemplate.opsForSet().add(userKillKey, loginId);
-        // 设置与临时订单相同的过期时间（如30分钟），避免无效缓存
         redisTemplate.expire(userKillKey, 30, TimeUnit.MINUTES);
 
         redisTemplate.opsForValue().set(
@@ -75,11 +83,11 @@ public class KillServiceImpl implements KillService {
                 30, TimeUnit.MINUTES
         );
 
-        // 发送延时消息检测订单确认状态（原逻辑保留）
+        // 发送延时消息（原逻辑保留）
         rocketMQTemplate.syncSend(
                 Constants.CHECK_CACHE_ORDER_CONFIRM_STATUS,
                 MessageBuilder.withPayload(orderNo).build(),
-                3000, 5 // 5级延时（约1分钟）
+                3000, 5
         );
 
         return orderNo;
