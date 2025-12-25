@@ -1,0 +1,37 @@
+seata:
+  tx-service-group: default_tx_group
+  registry:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      namespace: 051be649-c162-44ac-a488-a6fe9c54ee43
+      group: SEATA_GROUP
+      application: seata-server
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      namespace: 051be649-c162-44ac-a488-a6fe9c54ee43
+      group: SEATA_GROUP
+      data-id: seataServer.properties
+spring:
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      web-context-unify: false # 关闭context整合
+      enabled: true # 开启feign对sentinel的支持
+  openfeign:
+    client:
+      config:
+        default:
+          logger-level:  full
+          connect-timeout: 3000 # 连接超时 3 秒
+          read-timeout: 5000 # 读取超时 5 秒
+logging:
+  level:
+    com.example.api: debug

@@ -1,0 +1,127 @@
+# 顶层节点：与 spring、main 同级
+server:
+  port: 10010
+
+# 顶层节点：Spring 核心配置（合并所有 spring.cloud 子节点）
+spring:
+  application:
+    name: service-gateway
+  # 合并后的 spring.cloud 节点（所有 Cloud 相关配置统一在这里）
+  cloud:
+    # Nacos 配置（原第一个 spring.cloud.nacos 移到这里）
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      discovery:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+      config:
+        namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+    # Gateway 配置（原第二个 spring.cloud.gateway 移到这里）
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开放服务名访问方式
+          lower-case-service-id: true # 服务名小写
+      routes: # 路由配置（Swagger 路由放最前面）
+        - id: swagger-service-course
+          uri: lb://service-course # 明确指定服务名，而非变量
+          predicates:
+            - Path=/swagger-doc/service-course/v3/api-docs/**
+          filters:
+            - StripPrefix=2 
+        - id: swagger-service-system
+          uri: lb://service-system # 明确指定服务名，而非变量
+          predicates:
+            - Path=/swagger-doc/service-system/v3/api-docs/**
+          filters:
+            - StripPrefix=2 # 去掉前2层：swagger-doc + service-system → 转发到/v3/api-docs
+        - id: swagger-service-uaa
+          uri: lb://service-uaa # 明确指定服务名
+          predicates:
+            - Path=/swagger-doc/service-uaa/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+
+        # 业务路由（按原顺序保留）
+        - id: application-user
+          uri: lb://service-user
+          predicates:
+            - Path=/ymcc/user/**
+          filters:
+            - StripPrefix=2
+        - id: application-uaa
+          uri: lb://service-uaa
+          predicates:
+            - Path=/ymcc/uaa/**
+          filters:
+            - StripPrefix=2
+        - id: application-course
+          uri: lb://service-course
+          predicates:
+            - Path=/ymcc/course/**
+          filters:
+            - StripPrefix=2
+        - id: application-system
+          uri: lb://service-system
+          predicates:
+            - Path=/ymcc/system/**
+          filters:
+            - StripPrefix=2 # 去掉前 2 层（ymcc + system），转发到 /department/pagelist
+        - id: application-search
+          uri: lb://service-search
+          predicates:
+            - Path=/ymcc/search/**
+          filters:
+            - StripPrefix=2
+        - id: application-pay
+          uri: lb://service-pay
+          predicates:
+            - Path=/ymcc/pay/**
+          filters:
+            - StripPrefix=2
+        - id: application-order
+          uri: lb://service-order
+          predicates:
+            - Path=/ymcc/order/**
+          filters:
+            - StripPrefix=2
+        - id: application-media
+          uri: lb://service-media
+          predicates:
+            - Path=/ymcc/media/**
+          filters:
+            - StripPrefix=2
+        - id: application-kill
+          uri: lb://service-kill
+          predicates:
+            - Path=/ymcc/kill/**
+          filters:
+            - StripPrefix=2
+        - id: application-common
+          uri: lb://service-common
+          predicates:
+            - Path=/ymcc/common/**
+          filters:
+            - StripPrefix=2
+      # 跨域配置（保持不变）
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 
+              - "http://localhost:6001"
+              - "http://127.0.0.1:6002"
+              - "http://127.0.0.1:6003"  # 新增：添加前端实际运行的端口
+              - "http://localhost:6003"   # 可选：补充localhost形式（避免IP/域名差异）
+              - "http://localhost:63342"
+            allow-credentials: true
+            allowed-headers: "*"
+            allowedMethods: "*"
+  # 配置导入（保持不变）
+  config:
+    import:
+      - nacos:${spring.application.name}.yml?group=SERVICE_GROUP
+
+# 顶层节点：main 配置（与 spring 同级，修正层级）
+main:
+  allow-bean-definition-overriding: true

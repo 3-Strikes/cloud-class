@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level:  full
+            connect-timeout: 3000 # 连接超时 3 秒
+            read-timeout: 5000 # 读取超时 5 秒
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+    #   password: root
+      jedis:
+        pool:
+          min-idle: 2
+          max-idle: 10
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ymcc-order?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 2
+
+mybatis-plus:
+  mapper-locations: classpath:com/example/mapper/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
