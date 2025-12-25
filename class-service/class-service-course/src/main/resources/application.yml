@@ -12,6 +12,11 @@ spring:
         namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
       discovery:
         namespace: 36bb4e11-653f-4379-ba11-01b573f2b6c6
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:10010/ymcc/uaa
   config:
     import:
       - nacos:${spring.application.name}.yml

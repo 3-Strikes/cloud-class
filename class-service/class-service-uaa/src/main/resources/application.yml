@@ -31,7 +31,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://my-ymcc-auth-server:10010/ymcc/uaa
+          issuer-uri: http://127.0.0.1:10010/ymcc/uaa
   config:
     import:
       - nacos:${spring.application.name}.yml

@@ -154,7 +154,8 @@ router.beforeEach((to, from, next) => {
     //从session获取用户
     // localStorage.getItem('user'):localStorage获取user
     let user = JSON.parse(localStorage.getItem('user'));
-    if (!user &&(to.path != '/login' && to.path != '/register') ) {
+    // callback路径需要放行，因为它是OAuth2回调处理页面
+    if (!user &&(to.path != '/login' && to.path != '/register' && to.path != '/callback') ) {
         //没有获取到,跳转登录路由地址
         next({ path: '/login' })
     } else {

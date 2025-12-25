@@ -1,5 +1,6 @@
 import Login from './views/cjc/Login.vue'
 import Register from './views/cjc/Register.vue'
+import Callback from './views/cjc/callback.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Systemdictionary from './views/cjc/Systemdictionary.vue'
@@ -36,6 +37,12 @@ let routes = [
     {
         path: '/register',
         component: Register,
+        name: '',
+        hidden: true
+    },
+    {
+        path: '/callback',
+        component: Callback,
         name: '',
         hidden: true
     },

@@ -246,7 +246,7 @@ public class SecurityConfig {
     //授权服务器的全局配置项（各端口地址：获取授权码，获取token，获取公钥等），这里使用默认配置
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().issuer("http://my-ymcc-auth-server:10010/ymcc/uaa").build();
+        return AuthorizationServerSettings.builder().issuer("http://127.0.0.1:10010/ymcc/uaa").build();
     }
 
     //自定义token内容

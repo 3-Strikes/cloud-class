@@ -20,6 +20,7 @@
 <script>
   import { requestLogin } from '../../api/api';
   //import NProgress from 'nprogress'
+  import axios from 'axios'
   export default {
     data() {
       return {
@@ -50,7 +51,7 @@
         this.$refs.ruleForm2.resetFields();
       },
       getAuthorizeCode(tmpToken){
-        let url=axios.defaults.baseURL+"/uaa/oauth2/authorize?response_type=code&client_id=admin&scope=course pay order media search system commons uaa&redirect_uri=http://my-ymcc-auth-server:6001/callback&tempToken="+tmpToken;
+        let url=axios.defaults.baseURL+"/uaa/oauth2/authorize?response_type=code&client_id=admin&scope=course pay order media search system commons&redirect_uri=http://127.0.0.1:6001/callback&tempToken="+tmpToken;
         location.href=url;
       },
       handleSubmit2(ev) {
