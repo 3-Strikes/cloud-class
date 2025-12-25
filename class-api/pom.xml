@@ -19,6 +19,7 @@
         <module>class-api-user</module>
         <module>class-api-course</module>
         <module>class-api-order</module>
+        <module>class-api-kill</module>
     </modules>
 
     <properties>

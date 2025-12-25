@@ -61,9 +61,9 @@ public class CourseOrderServiceImpl extends ServiceImpl<CourseOrderMapper, Cours
     @Override
     public void checkRepeatSubmit(String token, String loginUserId, String courseIds) {
         String key= CacheKeys.REPEAT_SUBMIT_TOKEN+loginUserId+":"+courseIds;
-        Object o = cacheService.get(key);
-        if(o==null){
-            throw new RuntimeException("请勿重复提交");
+        String storedToken = (String) cacheService.get(key);
+        if (storedToken == null || !storedToken.equals(token)) {
+            throw new BusinessException("重复提交订单");
         }
         //必须删除token，否则下次提交会通过
         cacheService.del(key);

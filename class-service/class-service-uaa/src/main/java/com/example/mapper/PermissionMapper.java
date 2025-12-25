@@ -3,6 +3,8 @@ package com.example.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.domain.Permission;
 
+import java.util.List;
+
 /**
  * <p>
  * 权限表 Mapper 接口
@@ -13,4 +15,5 @@ import com.example.domain.Permission;
  */
 public interface PermissionMapper extends BaseMapper<Permission> {
 
+    List<Permission> selectPerms(Long loginId);
 }

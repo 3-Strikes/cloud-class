@@ -261,7 +261,13 @@
 															<td class="goods-attr">
 																<p class="sku-line">{{courseDto.course.gradeName}}</p>
 															</td>
-															<td style="width: 140px" cl优惠ass="goods-price second-color">￥{{courseDto.courseMarket.price}}元
+															<td style="width: 140px" class="goods-price second-color">
+																<template v-if="actId != ''">
+																	￥{{totalAmount}}元
+																</template>
+																<template v-else>
+																	￥{{courseDto.courseMarket.price}}元
+																</template>
 																<span style="text-decoration: line-through;font-size: 12px;color: #999999">{{courseDto.courseMarket.priceOld}}元</span>
 															</td>
 															<td class="goods-amount">{{courseDto.course.totalMinute}}</td>
@@ -545,7 +551,8 @@
 							payType:"1",
 							type:0,	//0代表普通订单，1代表秒杀订单
 							token:"",
-						}
+						},
+						actId:""
 					}
 				},
 				methods:{
@@ -565,7 +572,8 @@
 								URI = "killPlaceOrder";
 								param = {
 									payType:_this.orderForm.payType,
-									orderNo:_this.orderNo
+									orderNo:_this.orderNo,
+									courseId:_this.courseId
 								}
 							}else{
 								param = _this.orderForm;
@@ -642,7 +650,17 @@
 								let {success ,data,message} = res.data;
 								if(success){
 									this.courses = data.courseInfos;
-									this.totalAmount = data.totalAmount;
+									if(this.actId){
+										this.$http.get("kill/killCourse/online/one/"+this.courseId+"/"+this.actId).then(res=>{
+											let {success ,data,message} = res.data;
+											if(success){
+												this.totalAmount = data.killPrice;
+
+											}
+										})
+									}else {
+										this.totalAmount = data.totalAmount;
+									}
 								}else{
 									$.alert("订单数据加载失败["+message+"]");
 								}
@@ -665,7 +683,6 @@
 					}
 					this.orderForm.token = token;
 
-
 					//处理课程ID======================================================
 					let courseId = api.getQueryVariable("courseId");
 					if(!courseId){
@@ -686,6 +703,7 @@
 					let type = api.getQueryVariable("type");
 					//订单号，秒杀才有订单号
 					let orderNo = api.getQueryVariable("orderNo");
+					let actId = api.getQueryVariable("actId");
 					if(type && orderNo){
 						this.orderForm.type = parseInt(type);
 						this.orderNo = orderNo;
@@ -696,6 +714,7 @@
 								this.courseId = tempOrder.courseId;
 								this.seckillPrice = tempOrder.killPrice; // 展示秒杀价格
 								this.orderNo = orderNo;
+								this.actId = actId;
 							}
 						});
 					}

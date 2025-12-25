@@ -62,6 +62,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private RocketMQTemplate mqTemplate;
     @Autowired
     private MediaServiceAPI mediaServiceAPI;
+
     //本地事务
     @Transactional
     @Override

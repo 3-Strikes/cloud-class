@@ -1424,7 +1424,7 @@
 							let {data,success,message} = res.data;
 							if(success){
 								//type=1代表秒杀，type=0代表默认下单
-								window.location.href="/order.confirm.html?token="+data+"&courseId="+_this.courseId+"&type=1&orderNo="+orderNo;
+								window.location.href="/order.confirm.html?token="+data+"&courseId="+_this.courseId+"&type=1&orderNo="+orderNo+"&actId="+this.actId;
 							}else{
 								$.alert("服务器异常[防重Token获取失败]");
 							}

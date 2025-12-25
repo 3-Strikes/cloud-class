@@ -49,6 +49,10 @@
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
+      getAuthorizeCode(tmpToken){
+        let url=axios.defaults.baseURL+"/uaa/oauth2/authorize?response_type=code&client_id=admin&scope=course pay order media search system commons uaa&redirect_uri=http://my-ymcc-auth-server:6001/callback&tempToken="+tmpToken;
+        location.href=url;
+      },
       handleSubmit2(ev) {
         var _this = this;
         this.$refs.ruleForm2.validate((valid) => {
@@ -57,47 +61,32 @@
             this.logining = true;
             //NProgress.start();
             var loginParams = {
-                username: this.ruleForm2.account,
-                password: this.ruleForm2.checkPass ,
-                type: 0  //后台用户
+              username: this.ruleForm2.account,
+              password: this.ruleForm2.checkPass ,
+              type: 0  //后台用户
             };
+            this.$http.post("/uaa/login",loginParams).then(res=>{
+              if(res.data.success){
+                let map=res.data.data;
+                let loginUser =map.loginUser;
+                let tmpToken =map.tmpToken;
+                // let login=JSON.parse(loginUser);
+                localStorage.setItem("user",loginUser);
+                localStorage.setItem("tmpToken",tmpToken);
 
-            // 搞点假的登陆数据，返回
-            if(true){
-              localStorage.setItem("U-TOKEN","token");
-              localStorage.setItem("R-TOKEN","refresh_token");
-              localStorage.setItem("expiresTime","100000000000000000");
-              localStorage.setItem("user",'{"username":"'+this.ruleForm2.account+'"}');
-              //修改登录成功后跳转到首页
-              this.$router.push({ path: '/echarts' });
-              return ;
-            }
+                //要调用oauth授权服务获取授权码
+                this.getAuthorizeCode(tmpToken);
 
-            //发起请求 http://localhost:1020/hrm/  auth/auth/oauth/token?
-            this.$http.post("/uaa/login/common",loginParams).then(res=>{
-                console.log(res);
-                //获取到Token
-                if(res.data.success){ // jsonResult:  success: true
-                    var token = res.data.data.access_token; // 获取数据token
-                    var refresh_token = res.data.data.refresh_token;
-                    var expiresTime = res.data.data.expiresTime; // 过期时间
-                    //把token存储起来
-                    localStorage.setItem("U-TOKEN",token);
-                    localStorage.setItem("R-TOKEN",refresh_token);
-                    localStorage.setItem("expiresTime",expiresTime);
-                    localStorage.setItem("user",'{"username":"'+this.ruleForm2.account+'"}');
-                    //修改登录成功后跳转到首页
-                    this.$router.push({ path: '/echarts' });
-                    this.logining = false;
-                }else{
-                    this.$message.error(res.data.message);
-                    this.logining = false;
-                    return;
-                }
-            }).catch(error => {
-                this.$message.error("登录失败["+error.message+"]");
+                this.logining = false;
+              }else{
+                this.$message.error(res.data.message);
                 this.logining = false;
                 return;
+              }
+            }).catch(error => {
+              this.$message.error("登录失败["+error.message+"]");
+              this.logining = false;
+              return;
             });
 
           } else {

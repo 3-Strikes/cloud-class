@@ -1,5 +1,7 @@
 package com.example.web.controller;
 
+import cn.hutool.http.HttpUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.Login;
 import com.example.query.LoginQuery;
@@ -7,7 +9,11 @@ import com.example.result.JSONResult;
 import com.example.result.PageList;
 import com.example.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -17,6 +23,25 @@ public class LoginController {
     @Autowired
     public LoginService loginService;
 
+    @Autowired
+    private OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
+    @RequestMapping(value="/refresh",method= RequestMethod.POST)
+    public JSONResult saveOrUpdate(@RequestBody Map map){
+        String refreshToken = (String)map.get("refreshToken");
+        String username = (String)map.get("username");
+        Login one = loginService.getOne(Wrappers.lambdaQuery(Login.class).eq(Login::getUsername, username));
+
+        String url=oAuth2ResourceServerProperties.getJwt().getIssuerUri()+"/oauth2/token";
+
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("grant_type","refresh_token");
+        paramMap.put("client_id",one.getClientId());
+        paramMap.put("client_secret",one.getClientSecret());
+        paramMap.put("refresh_token",refreshToken);
+
+        String post = HttpUtil.post(url, paramMap);
+        return JSONResult.success(post);
+    }
 
 
     /**

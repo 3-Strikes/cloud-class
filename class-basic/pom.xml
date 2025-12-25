@@ -15,6 +15,7 @@
         <module>class-basic-common</module>
         <module>class-basic-dependency</module>
         <module>class-basic-cache</module>
+        <module>class-basic-resource</module>
     </modules>
 
     <properties>

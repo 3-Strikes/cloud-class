@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/class-api/class-api-course/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-api/class-api-kill/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-api/class-api-media/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-api/class-api-order/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-api/class-api-search/src/main/java" charset="UTF-8" />
@@ -17,6 +18,7 @@
     <file url="file://$PROJECT_DIR$/class-basic/class-basic-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/class-basic-dependency/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/class-basic-dependency/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/class-basic/class-basic-resource/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/cloud-gen-code/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/cloud-gen-code/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/class-basic/src/main/java" charset="UTF-8" />

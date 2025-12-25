@@ -19,6 +19,7 @@ import com.example.vo.CourseOrderVO;
 import jakarta.validation.Valid;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -136,6 +137,7 @@ public class CourseController {
     /**
     * 带条件分页查询数据
     */
+    @PreAuthorize("hasAuthority('course:pagelist')")
     @RequestMapping(value = "/pagelist",method = RequestMethod.POST)
     public JSONResult page(@RequestBody CourseQuery query){
         Page<Course> page = new Page<Course>(query.getPage(),query.getRows());

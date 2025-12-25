@@ -10,12 +10,17 @@ import com.example.service.KillActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/killActivity")
 public class KillActivityController {
 
     @Autowired
     public KillActivityService killActivityService;
+
+
 
     /**
      * 第一步：后台页面发布秒杀活动

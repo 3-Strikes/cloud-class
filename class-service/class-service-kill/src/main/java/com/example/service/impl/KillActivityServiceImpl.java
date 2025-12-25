@@ -43,6 +43,9 @@ public class KillActivityServiceImpl extends ServiceImpl<KillActivityMapper, Kil
 
     @Autowired
     private CourseServiceAPI courseServiceAPI;
+
+    @Autowired
+    private KillActivityMapper killActivityMapper;
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void publish(Long actId) {
@@ -91,5 +94,7 @@ public class KillActivityServiceImpl extends ServiceImpl<KillActivityMapper, Kil
         //redis中有多个hash集合，要从多个hash集合中获取KillCourse集合
 
     }
+
+
 
 }

@@ -55,14 +55,22 @@ async function doRequest () {
     try {
         //获取新的Token
         const data = await getNewToken();
+        let str=data.data.data;
+        let result=JSON.parse(str);
 
-        var token = data.data.data.access_token;
-        var refresh_token = data.data.data.refresh_token;
-        var expiresTime = data.data.data.expiresTime;
-
-        localStorage.setItem("expiresTime",expiresTime);
+        var token = result.access_token;
+        var refresh_token = result.refresh_token;
+        var expiresTime =new Date().getTime()+ result.expires_in*1000;
         localStorage.setItem("U-TOKEN",token);
         localStorage.setItem("R-TOKEN",refresh_token);
+        localStorage.setItem("expiresTime",expiresTime);
+        // var token = data.data.data.access_token;
+        // var refresh_token = data.data.data.refresh_token;
+        // var expiresTime = data.data.data.expiresTime;
+        //
+        // localStorage.setItem("expiresTime",expiresTime);
+        // localStorage.setItem("U-TOKEN",token);
+        // localStorage.setItem("R-TOKEN",refresh_token);
         //继续执行上一次失败的请求
     } catch(err) {
         toLogin();
@@ -72,6 +80,11 @@ async function doRequest () {
 
 axios.interceptors.request.use(config => {
 
+    if(localStorage.getItem('U-TOKEN')){
+        // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+        config.headers['Authorization'] = "Bearer "+localStorage.getItem('U-TOKEN')
+    }
+
     //刷新Token请求放行
     if(config.url && config.url.indexOf("refresh") > 0){
         return config;
@@ -79,21 +92,16 @@ axios.interceptors.request.use(config => {
 
     //如果已经登录了,每次都把token作为一个请求头传递过程
     if (localStorage.getItem('U-TOKEN')) {
-
         //自动刷新Token
         var expiresTime = localStorage.getItem("expiresTime");
 
         let nowTime = new Date().getTime();
-        console.log(nowTime, expiresTime,nowTime - expiresTime );
-        let diff = (expiresTime - nowTime ) / 1000 / 60;
+        let diff = (expiresTime - nowTime) / 1000 / 60;
         if(diff == 0 || diff < 5){
             console.log("Token过期或即将过期...");
             //刷新Token
             doRequest();
         }
-
-        // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
-        config.headers['Authorization'] = "Bearer "+localStorage.getItem('U-TOKEN')
     }
     return config
 }, error => {
@@ -102,7 +110,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(config => {
-    return config
+    return config;
 },error => {
     if (error && error.response) {
         console.log(error);
@@ -127,32 +135,32 @@ Vue.use(Vuex)
 //NProgress.configure({ showSpinner: false });
 
 const router = new VueRouter({
-  routes
+    mode: 'history',
+    routes
 })
 
 //每次路由之前都要执行,每次请求都要经过路由
 //每次请求都不拦截到   login ---> echarts
 router.beforeEach((to, from, next) => {
 
-  //NProgress.start(); // 如果你当前的请求路径是login
-  if (to.path == '/login') {
-    //重新登录,把原来session移除掉
-    localStorage.removeItem('user');
-    localStorage.removeItem('U-TOKEN');
-    localStorage.removeItem('R-TOKEN');
-    localStorage.removeItem('expiresTime');
-  }
+    if (to.path == '/login') {
+        //重新登录,把原来session移除掉
+        localStorage.removeItem('user');
+        localStorage.removeItem('U-TOKEN');
+        localStorage.removeItem('R-TOKEN');
+        localStorage.removeItem('expiresTime');
+    }
 
-  //从session获取用户
+    //从session获取用户
     // localStorage.getItem('user'):localStorage获取user
-  let user = JSON.parse(localStorage.getItem('user'));
-  if (!user &&(to.path != '/login' && to.path != '/register') ) {
-    //没有获取到,跳转登录路由地址
-    next({ path: '/login' })
-  } else {
-    //已经登录,正常访问
-    next()  // 访问成功了，放行。。
-  }
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (!user &&(to.path != '/login' && to.path != '/register') ) {
+        //没有获取到,跳转登录路由地址
+        next({ path: '/login' })
+    } else {
+        //已经登录,正常访问
+        next()  // 访问成功了，放行。。
+    }
 })
 
 
@@ -161,11 +169,11 @@ router.beforeEach((to, from, next) => {
 //});
 
 new Vue({
-  //el: '#app',
-  //template: '<App/>',
-  router,
-  store,
-  //components: { App }
-  render: h => h(App) // index.html id为app的div标签下面使用<App/>和template: '<App/>',一样的效果
+    //el: '#app',
+    //template: '<App/>',
+    router,
+    store,
+    //components: { App }
+    render: h => h(App) // index.html id为app的div标签下面使用<App/>和template: '<App/>',一样的效果
 }).$mount('#app') // 和el: '#app'效果一样都是挂载在index.html id为app的div标签上面
 

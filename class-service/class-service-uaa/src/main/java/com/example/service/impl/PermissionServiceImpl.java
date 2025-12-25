@@ -6,6 +6,8 @@ import com.example.mapper.PermissionMapper;
 import com.example.service.PermissionService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 权限表 服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission> implements PermissionService {
 
+    @Override
+    public List<Permission> selectPerms(Long loginId) {
+        return baseMapper.selectPerms(loginId);
+    }
 }
