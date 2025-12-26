@@ -14,11 +14,11 @@ import com.example.dto.RegisDTO;
  */
 public interface UserService extends IService<User> {
 
-    Long addUser(RegisDTO regisInfo,Long loginId);
+    String addUser(RegisDTO regisInfo, String id);
 
-    void initAccount(RegisDTO regisInfo,Long userId);
+    void initAccount(RegisDTO regisInfo,String userId);
 
-    Long addUaaLogin(RegisDTO regisInfo);
+    String addUaaLogin(RegisDTO regisInfo, String id);
 
     void regis(RegisDTO regisInfo);
 

@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.api.LoginServiceAPI;
 import com.example.domain.Login;
@@ -33,8 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private LoginServiceAPI loginServiceAPI;
 
     @Override
-    public Long addUaaLogin(RegisDTO regisInfo) {
+    public String addUaaLogin(RegisDTO regisInfo, String id) {
         Login login = new Login();
+        login.setId(String.valueOf(id)); // 使用传入的id，确保与User和Employee保持一致
         login.setUsername(regisInfo.getMobile());
         login.setPassword(MD5Utils.encrypt32(regisInfo.getPassword()));
         login.setType(UserType.WEB_SITE.getCode());
@@ -43,39 +45,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         login.setCredentialsNonExpired(true);
         login.setAccountNonLocked(true);
         login.setClientId(UserType.WEB_SITE.getDesc());
+
+        //需传secret
         JSONResult<Long> jsonResult = loginServiceAPI.saveOrUpdate(login);
-        Long loginId = jsonResult.getData();
+        String loginId = String.valueOf(jsonResult.getData());
         return loginId;
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void regis(RegisDTO regisInfo) {
-        //uaa服务：保存认证信息
-        Long loginId=this.addUaaLogin(regisInfo);
+        // 生成统一的id，确保t_login、t_user、t_employee三个表的id保持一致
+        Long commonId = IdUtil.getSnowflakeNextId();
+        
+        //uaa服务：保存认证信息，使用统一的id
+        String loginId = this.addUaaLogin(regisInfo, String.valueOf(commonId));
 
-        //user服务:保存用户
-        Long userId=this.addUser(regisInfo,loginId);
+        //user服务:保存用户，使用统一的id（作为主键id，loginId字段也设置为这个值）
+        String userId = this.addUser(regisInfo, String.valueOf(commonId));
         //user服务：初始化账户
-        this.initAccount(regisInfo,userId);
+        this.initAccount(regisInfo, userId);
 //        int a = 1/0;
     }
 
     @Override
-    public Long addUser(RegisDTO regisInfo,Long loginId) {
-        long current=System.currentTimeMillis();
+    public String addUser(RegisDTO regisInfo, String id) {
+        long current = System.currentTimeMillis();
         User user = new User();
+        user.setId(String.valueOf(id)); // 使用传入的id，确保与Login和Employee保持一致
         user.setPhone(regisInfo.getMobile());
         user.setCreateTime(current);
         user.setUpdateTime(current);
         user.setNickName("小可爱");
-        user.setLoginId(loginId);
+        user.setLoginId(id); // loginId字段也设置为相同的id
         save(user);
         return user.getId();
     }
 
     @Override
-    public void initAccount(RegisDTO regisInfo,Long userId) {
+    public void initAccount(RegisDTO regisInfo,String userId) {
         UserAccount userAccount = new UserAccount();
         userAccount.setId(userId);
         userAccount.setFrozenAmount(0.0);

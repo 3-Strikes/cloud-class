@@ -20,8 +20,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private String id;
 
     @TableField("create_time")
     private Long createTime;
@@ -66,13 +66,13 @@ public class User implements Serializable {
     private Byte secLevel;
 
     @TableField("login_id")
-    private Long loginId;
+    private String loginId;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -140,11 +140,11 @@ public class User implements Serializable {
         this.secLevel = secLevel;
     }
 
-    public Long getLoginId() {
+    public String getLoginId() {
         return loginId;
     }
 
-    public void setLoginId(Long loginId) {
+    public void setLoginId(String loginId) {
         this.loginId = loginId;
     }
 

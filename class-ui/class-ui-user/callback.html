@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/plugins/vue/dist/vue.js"></script>
+<script type="text/javascript" src="js/plugins/axios/dist/axios.js"></script>
+<script src="/js/axios.common.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<link rel="stylesheet" href="js/jqueryAlert/alert.css">
+<script src="js/jqueryAlert/alert.js"></script>
+<script>
+    new Vue({
+        el: "#login-wrap",
+        data() {
+            return {}
+        },
+        methods: {
+            getToken(code) {
+                let url = axios.defaults.baseURL + "/uaa/oauth2/token";
+                const params = new URLSearchParams({
+                    grant_type: "authorization_code",
+                    code: code,
+                    client_id: "website",
+                    client_secret: "123",
+                    redirect_uri: "http://127.0.0.1:6002/callback.html",
+                    tempToken: localStorage.getItem("tmpToken")
+                });
+                this.$http.post(url, params).then(res => {
+                    localStorage.removeItem("tmpToken");
+                    var token = res.data.access_token;
+                    var refresh_token = res.data.refresh_token;
+                    var expiresTime = new Date().getTime() + res.data.expires_in * 1000;
+                    $.cookie('U-TOKEN',token);
+                    $.cookie('R-TOKEN',refresh_token);
+
+                    let callUrl = api.getCallUrl();
+                    if(callUrl){
+                    	window.location.href = callUrl;
+                    }else{
+                    	window.location.href="http://127.0.0.1:6002/user.home.html"
+                    }
+
+                    // localStorage.setItem("expiresTime", expiresTime);
+                    // this.$router.push({path: '/echarts'});
+                })
+            }
+        },
+        mounted() {
+            const urlParams = new URLSearchParams(window.location.search);
+            // 2. 获取单个参数（如code、state、tempToken）
+            const code = urlParams.get('code'); // 获取?code=xxx中的xxx
+            this.getToken(code);
+        }
+    })
+
+</script>
+</html>

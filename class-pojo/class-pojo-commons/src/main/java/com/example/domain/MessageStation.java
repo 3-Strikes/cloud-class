@@ -43,7 +43,7 @@ public class MessageStation implements Serializable {
     private Integer isread;
 
     @TableField("user_id")
-    private Long userId;
+    private String userId;
 
     public Long getId() {
         return id;
@@ -93,11 +93,11 @@ public class MessageStation implements Serializable {
         this.isread = isread;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

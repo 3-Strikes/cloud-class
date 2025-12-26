@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门户网站登录接口测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result h3 {
+            margin-bottom: 10px;
+        }
+        .result pre {
+            background: rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .info h4 {
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+        .info ul {
+            margin-left: 20px;
+            color: #555;
+        }
+        .info li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 门户网站登录接口测试</h1>
+        
+        <div class="info">
+            <h4>测试说明：</h4>
+            <ul>
+                <li>接口地址：<code>POST /uaa/login/common</code></li>
+                <li>默认测试账号：13330964748 / 123</li>
+                <li>用户类型：1（前台用户）</li>
+                <li>此页面用于快速测试登录接口是否正常工作</li>
+            </ul>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名：</label>
+                <input type="text" id="username" name="username" value="13330964748" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码：</label>
+                <input type="password" id="password" name="password" value="123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="type">用户类型：</label>
+                <input type="number" id="type" name="type" value="1" required>
+                <small style="color: #999; font-size: 12px;">1=前台用户, 0=后台用户</small>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">测试登录</button>
+        </form>
+
+        <div id="result" class="result">
+            <h3 id="resultTitle"></h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:10010/ymcc';
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultContent = document.getElementById('resultContent');
+            
+            // 获取表单数据
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                type: parseInt(document.getElementById('type').value)
+            };
+            
+            // 显示加载状态
+            submitBtn.disabled = true;
+            submitBtn.textContent = '测试中...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                console.log('发送登录请求:', formData);
+                
+                const response = await fetch(`${API_BASE_URL}/uaa/login/common`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                console.log('登录响应:', data);
+                
+                // 显示结果
+                resultDiv.style.display = 'block';
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultTitle.textContent = '✅ 登录成功！';
+                    
+                    const tokenInfo = {
+                        '访问令牌 (access_token)': data.data.access_token ? 
+                            data.data.access_token.substring(0, 50) + '...' : '无',
+                        '刷新令牌 (refresh_token)': data.data.refresh_token ? 
+                            data.data.refresh_token.substring(0, 50) + '...' : '无',
+                        '过期时间 (expires_in)': data.data.expires_in + ' 秒',
+                        '令牌类型 (token_type)': data.data.token_type,
+                        '权限范围 (scope)': data.data.scope
+                    };
+                    
+                    resultContent.innerHTML = `
+                        <p><strong>Token 信息：</strong></p>
+                        <pre>${JSON.stringify(tokenInfo, null, 2)}</pre>
+                        <p style="margin-top: 15px;"><strong>完整响应：</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultTitle.textContent = '❌ 登录失败';
+                    resultContent.innerHTML = `
+                        <p><strong>错误信息：</strong> ${data.message || '未知错误'}</p>
+                        <pre style="margin-top: 10px;">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('登录错误:', error);
+                
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultTitle.textContent = '❌ 请求失败';
+                resultContent.innerHTML = `
+                    <p><strong>错误信息：</strong> ${error.message}</p>
+                    <p style="margin-top: 10px;"><strong>可能的原因：</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>后端服务未启动</li>
+                        <li>接口地址不正确</li>
+                        <li>网络连接问题</li>
+                        <li>CORS 跨域问题</li>
+                    </ul>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '测试登录';
+            }
+        });
+        
+        // 页面加载时显示提示
+        console.log('登录测试页面已加载');
+        console.log('API 地址:', API_BASE_URL);
+        console.log('测试接口:', `${API_BASE_URL}/uaa/login/common`);
+    </script>
+</body>
+</html>
+
+
+

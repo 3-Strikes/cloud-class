@@ -60,7 +60,7 @@
 						<!-- 普通登录 star -->
 
 						<div id="con_login_2" class="form">
-							<form id="form2" action="http://user.ymcc.com:6003/login.html" method="POST">
+							<form id="form2" action="http://localhost:6003/login.html" method="POST">
 								<input type="hidden" name="_csrf" value="X3YzS2VmZWoHDlt8IR4uEwo.bBRWMww8CS4GDFQ3MBBnMnQECyldHQ==">
 								<div class="form-group item-name">
 									<!-- 错误项标注 给div另添加一个class值'error' star -->
@@ -116,7 +116,7 @@
 						<!-- 动态登录 star -->
 
 						<div id="con_login_1" class="form" style="display: none;">
-							<form id="form1" action="http://user.ymcc.com:6003/login.html" method="POST">
+							<form id="form1" action="http://localhost:6003/login.html" method="POST">
 								<input type="hidden" name="_csrf" value="X3YzS2VmZWoHDlt8IR4uEwo.bBRWMww8CS4GDFQ3MBBnMnQECyldHQ==">
 								<div class="form-group item-name">
 									<!-- 错误项标注 给div另添加一个class值'error' star -->
@@ -557,12 +557,15 @@
 				}
 			},
 			methods:{
+				getAuthorizeCode(tmpToken){
+					let url=axios.defaults.baseURL+"/uaa/oauth2/authorize?response_type=code&client_id=website&scope=course pay order media search system commons&redirect_uri=http://127.0.0.1:6002/callback.html&tempToken="+tmpToken;
+					location.href=url;
+				},
 				submitLogin:function () {
-					console.log($("#loginsubmit"));
 					$("#loginsubmit").val("登录中...");
 					$("#loginsubmit").attr("disabled",true);
-                    var username = this.formParams.phone;
-                    var password = this.formParams.password;
+					var username = this.formParams.phone;
+					var password = this.formParams.password;
 					//拼接获取tokne的参数
 					var loginParams = {
 						username: username,
@@ -571,55 +574,37 @@
 					};
 
 					//发起请求
-					this.$http.post("/uaa/login/common",loginParams).then(res=>{
-
+					this.$http.post("/uaa/login",loginParams).then(res=>{
+						debugger;
 						let {success , data,message} = res.data;
-
-                        //获取到Token
+						//获取到Token
 						if(success){
 							$.alert("登录成功");
-							var token = data.access_token;
-							var refresh_token = data.refresh_token;
-							$.cookie('U-TOKEN',token,{
-								expires:7,
-								path:'/',
-								domain:'ymcc.com',
-								secure:false
-							});
-							$.cookie('R-TOKEN',refresh_token,{
-								expires:7,
-								path:'/',
-								domain:'ymcc.com',
-								secure:false
-							});
-
-							var userJSON = {"username":username};
-							var userStr = JSON.stringify(userJSON);
+							let map=res.data.data;
+							let loginUser =map.loginUser;
+							let tmpToken =map.tmpToken;
+							localStorage.setItem("tmpToken",tmpToken);
+							this.getAuthorizeCode(tmpToken);
+							// let login=JSON.parse(loginUser);
+							// localStorage.setItem("user",loginUser);
+							var userJSON = {"username":loginUser};
+							var userStr = JSON.stringify(username);
 							$.cookie('user',userStr,{
 								expires:7,
 								path:'/',
-								domain:'ymcc.com',
+								domain:'127.0.0.1',
 								secure:false
 							});
-
-
-							let callUrl = api.getCallUrl();
-							if(callUrl){
-								window.location.href = callUrl;
-							}else{
-								window.location.href="http://user.ymcc.com:6003/user.home.html"
-							}
 						}else{
 							$.alert("登录失败["+message+"]");
 						}
 						$("#loginsubmit").attr("disabled",false);
 						$("#loginsubmit").val("立即登录");
-
-                    }).catch(error => {
-                        $.alert("登录失败["+error.message+"]");
+					}).catch(error => {
+						$.alert("登录失败["+error.message+"]");
 						$("#loginsubmit").attr("disabled",false);
 						$("#loginsubmit").val("立即登录");
-                    });
+					});
 				}
 			},
 			mounted(){

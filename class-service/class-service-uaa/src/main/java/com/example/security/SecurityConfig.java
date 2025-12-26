@@ -124,7 +124,7 @@ public class SecurityConfig {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterAt(myUsernamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/login", "/oauth2/authorize", "/oauth2/token", "/oauth2/jwks").permitAll()  //无需登录可以访问
+                .requestMatchers("/login", "/login/common", "/oauth2/authorize", "/oauth2/token", "/oauth2/jwks").permitAll()  //无需登录可以访问
                 .anyRequest().authenticated()
         );
          http.oauth2ResourceServer((oauth2) -> oauth2

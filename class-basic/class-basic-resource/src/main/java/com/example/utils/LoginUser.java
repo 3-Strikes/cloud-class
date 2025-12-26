@@ -13,8 +13,8 @@ public class LoginUser {
         return o;
     }
 
-    public static Long getLoginUserId(){
-        Long id = getLoginUser().getId();
+    public static String getLoginUserId(){
+        String id = getLoginUser().getId();
         return id;
     }
 }

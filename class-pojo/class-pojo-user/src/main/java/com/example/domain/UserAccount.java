@@ -20,8 +20,8 @@ public class UserAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id",type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    private String id;
 
     @TableField("usable_amount")
     private Double usableAmount;
@@ -41,11 +41,11 @@ public class UserAccount implements Serializable {
     @TableField("password")
     private String password;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

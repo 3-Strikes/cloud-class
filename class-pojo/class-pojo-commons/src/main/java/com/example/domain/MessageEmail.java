@@ -21,8 +21,8 @@ public class MessageEmail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private String id;
 
     @TableField("title")
     private String title;
@@ -40,16 +40,16 @@ public class MessageEmail implements Serializable {
     private String copyto;
 
     @TableField("user_id")
-    private Long userId;
+    private String userId;
 
     @TableField("send_time")
     private Date sendTime;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -85,11 +85,11 @@ public class MessageEmail implements Serializable {
         this.copyto = copyto;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

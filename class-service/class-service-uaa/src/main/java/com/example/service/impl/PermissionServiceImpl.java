@@ -20,7 +20,7 @@ import java.util.List;
 public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission> implements PermissionService {
 
     @Override
-    public List<Permission> selectPerms(Long loginId) {
+    public List<Permission> selectPerms(String loginId) {
         return baseMapper.selectPerms(loginId);
     }
 }
